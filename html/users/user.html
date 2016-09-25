@@ -1,0 +1,187 @@
+﻿<style>
+    .SearchTable {
+        width: 100%;
+        border: none;
+    }
+
+        .SearchTable tr td {
+            padding: 0.7rem;
+            line-height: 1.6;
+        }
+
+    .errorInfo {
+        margin-top: 5px;
+        margin-left: 5px;
+        float: left;
+    }
+
+    .tab-content p {
+        color: red;
+    }
+</style>
+<div>
+    <div class="tab-content">
+        <div class="panel panel-default">
+            <div class="panel-heading">用户维护</div>
+            <div class="panel-body" style="padding:5px 10px 10px 10px;">
+                <div style="float:left;width:30%;border-right:1px solid #EEE; min-height:700px;overflow:auto;padding-right:10px;">
+                    <!--<div class="input-group">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" ng-click="loadTree();">Go!</button>
+                        </span>
+                        <input type="text" class="form-control" id="txtSearch" placeholder="Search for..." ng-model="searchText">
+                    </div>-->
+                    <div class="form-group">
+                        <div class="input-group has-success">
+                            <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-empty" ng-keydown="searchKeyDown($event)" id="txtSearch" placeholder="输入内容查询" ng-model="searchText">
+                            <div class="input-group-addon" ng-click="loadTree();">
+                                <i class="fa fa-search"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-angular-treeview="true"
+                         data-tree-id="tree"
+                         data-tree-model="resultSet"
+                         data-node-id="id"
+                         data-node-label="name"
+                         data-node-children="children"
+                         data-show-trash="false">
+                    </div>
+                </div>
+                <div style="float:left;width:70%;min-height:700px;overflow:auto;padding-left:10px;padding-top:10px;">
+                    <form name="tableForm" ng-submit="saveNode(tableForm.$valid)" novalidate>
+                        <button type="button" class="btn btn-primary" ng-click="addNode();">新增</button>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-primary" ng-click="cancelNode(selectedNode);">取消</button>
+                        <button type="button" class="btn btn-primary" ng-click="delNode(selectedNode);">删除</button>
+                        <button type="button" class="btn btn-primary" ng-click="import();">批量导入</button>
+                        <table class="SearchTable" id="formTable" ng-model="selectedNode">
+                            <tr style="display:none;">
+                                <td>
+                                    id：
+                                </td>
+                                <td>
+
+                                    <input type="text" class="form-control" id="id" name="id" style="width:300px;" ng-model="selectedNode.id">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:150px;">
+                                    用户名：
+                                </td>
+                                <td>
+                                    <input type="text" ng-disabled="!add" class="form-control" id="logname" name="logname" placeholder="用户名" style="width:300px;float:left;" ng-model="selectedNode.logname" required ng-maxlength="20">
+                                    <p ng-show="tableForm.logname.$error.required" class="errorInfo">用户名不能为空</p>
+                                    <p ng-show="tableForm.logname.$error.maxlength" class="errorInfo">用户名长度至多为20位</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    姓名：
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="姓名" style="width:300px;float:left;" ng-model="selectedNode.name" required ng-maxlength="20">
+                                    <p ng-show="tableForm.name.$error.required" class="errorInfo">姓名不能为空</p>
+                                    <p ng-show="tableForm.name.$error.maxlength" class="errorInfo">姓名长度至多为20位</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    学号：
+                                </td>
+                                <td>
+                                    <input ng-disabled="!add" type="text" class="form-control" id="no" name="no" placeholder="学号" style="width:300px;float:left;" ng-model="selectedNode.no" required ng-minlength="6" ng-maxlength="20">
+                                    <p ng-show="tableForm.no.$error.required" class="errorInfo">学号不能为空</p>
+                                    <p ng-show="tableForm.no.$error.maxlength" class="errorInfo">学号长度至多为20位</p>
+                                    <p ng-show="tableForm.no.$error.minlength" class="errorInfo">学号长度至少为6位</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    密码：
+                                </td>
+                                <td>
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="密码" style="width:300px;float:left;" ng-model="selectedNode.password" required ng-minlength="6" ng-maxlength="12">
+                                    <p ng-show="tableForm.password.$error.required" class="errorInfo">密码不可为空</p>
+                                    <p ng-show="tableForm.password.$error.minlength" class="errorInfo">密码长度至少为6位</p>
+                                    <p ng-show="tableForm.password.$error.maxlength" class="errorInfo">密码长度至多为12位</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    确认密码：
+                                </td>
+                                <td>
+                                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="确认密码" style="width:300px;float:left;" ng-model="selectedNode.confirmPassword" required ng-minlength="6" ng-maxlength="12" ng-match="password">
+                                    <p ng-show="tableForm.confirmPassword.$error.required" class="errorInfo">密码不可为空</p>
+                                    <p ng-show="tableForm.confirmPassword.$error.minlength" class="errorInfo">密码长度至少为6位</p>
+                                    <p ng-show="tableForm.confirmPassword.$error.maxlength" class="errorInfo">密码长度至多为12位</p>
+                                    <p ng-show="tableForm.confirmPassword.$error.match" class="errorInfo">两次输入的密码不一致</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    邮箱：
+                                </td>
+                                <td>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="邮箱" style="width:300px;float:left;" ng-model="selectedNode.email" ng-pattern="/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/" required>
+                                    <p ng-show="tableForm.email.$error.required" class="errorInfo">邮箱不可为空</p>
+                                    <p ng-show="tableForm.email.$error.pattern" class="errorInfo">邮箱格式不正确</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    系统角色：
+                                </td>
+                                <td>
+                                    <select class="form-control" name="roleId" style="width:300px;float:left;" ng-model="selectedNode.roleId">
+                                        <option value="">无</option>
+                                        <option ng-repeat="role in systemRoles" value="{{role.id}}">{{role.name}}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    状态：
+                                </td>
+                                <td>
+                                    <select class="form-control" name="status" style="width:300px;float:left;" ng-model="selectedNode.status" required>
+                                        <option value="1">有效</option>
+                                        <option value="0">无效</option>
+                                    </select>
+                                    <p ng-show="tableForm.status.$error.required" class="errorInfo">状态不可为空</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <script type="text/ng-template" id="UserImport.html">
+        <div class="modal-header">
+            <h3 class="modal-title">用户导入</h3>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label for="file" class="col-sm-2 control-label">选择文件:</label>
+                    <div class="col-sm-10">
+                        <input type="file" accept="*" nv-file-select class="form-control" name="file" fileread="file" uploader="uploader" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2"></div>
+                    <a class="col-sm-5" href="../files/用户导入模板.xls">下载用户导入模板</a>
+                    <a class="col-sm-5" href="../files/用户导入示例数据.xls">下载用户导入示例数据</a>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" style="width:100px;" type="button" ng-click="ok()">确认</button>
+            <button class="btn btn-warning" style="width:100px;" type="button" ng-click="cancel()">取消</button>
+        </div>
+    </script>
+</div>

@@ -1,0 +1,231 @@
+<style>
+    .imgHW {
+        border-radius: 2px;
+        margin: 5px;
+        padding: 2px;
+        border: 1px solid #515151;
+        height: 195px;
+        text-align: center;
+    }
+    .imgItem{
+        /*height: 110px;*/
+        /*width: 120px;*/
+        height:60%;
+        width:90%;
+    }
+    .textItem{
+        margin: 5px;
+        width: 90%;
+        overflow:hidden;
+
+        text-overflow:ellipsis;
+        text-align: center;
+        line-height:20px;
+        height:40px;
+    }
+</style>
+
+<div class="row">
+    <ul class="breadcrumb">
+        <li class="active">图片管理</li>
+    </ul>
+    <!--    <div class="col-md-4">
+            <div class="form-group">
+            <div class="input-group has-success">
+                <input type="text" class="form-control" placeholder="Search for...">
+                  <div class="input-group-btn">
+                    <button class="btn btn-default has-success" type="button">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>搜索
+                    </button>
+                  </div>
+            </div>
+                </div>
+        </div>-->
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <div class="input-group has-success">
+                <input type="text" class="form-control" ng-model="keyWords" placeholder="请输入图片查询信息">
+                <div style="cursor:pointer" class="input-group-addon" ng-click="searchByPictureName(keyWords)"><i
+                        class="fa fa-search"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2">{{hitText}}</div>
+    <div class="col-md-2 col-md-offset-3 btn-group">
+        <!-- <button class="btn btn-default">
+             <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+             下载
+         </button>
+         <button class="btn btn-default">
+             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+             删除
+         </button>-->
+        <button class="btn btn-primary btn-block" type="button" id="uploadPaneButton" ng-click="showUploadPane()">
+            <span class="glyphicon glyphicon-open" aria-hidden="true"></span>
+            上传图片
+        </button>
+        <!--        <button class="btn btn-primary btn-block" type="button" data-toggle="collapse" data-target="#uploadPane"
+                        aria-expanded="false" aria-controls="uploadPane" id="uploadPaneButton">
+                    <span class="glyphicon glyphicon-open" aria-hidden="true"></span>
+                    上传
+                </button>-->
+    </div>
+</div>
+<div class="row well" id="uploadPane" ng-show="showUploadPaneAttr">
+    <div class="col-md-3">
+
+        <!-- Example: nv-file-select="" uploader="{Object}" options="{Object}" filters="{String}" -->
+        多张图片
+        <input type="file" accept="image/jpg,image/jpeg,image/bmp,image/png" nv-file-select uploader="uploader"
+               multiple/><br/>
+
+        <!--单张图片
+        <input type="file" accept="image/*" nv-file-select uploader="uploader"/>-->
+        <div>
+            <label>科室</label>
+            <select class="form-control" ng-change="showDepartment(department)"
+                    ng-model="department"
+                    ng-options="department.name for department in selectValue.departmentsForSelect">
+                <option value="">-- 请选择 --</option>
+            </select>
+        </div>
+        <div>
+            <label>病种大类</label>
+            <select class="form-control" ng-change="showDiseaseTypes(diseaseTypesForSelect)"
+                    ng-model="diseaseTypesForSelect"
+                    ng-options="diseaseTypesForSelect.name for diseaseTypesForSelect in selectValue.diseaseTypesForSelect">
+                <option value="">-- 请选择 --</option>
+            </select>
+            <label>病种</label>
+            <select class="form-control" ng-change="showDiseases(diseasesForSelect)"
+                    ng-model="diseasesForSelect"
+                    ng-options="diseasesForSelect.name for diseasesForSelect in diseaseTypesForSelect.diseasesForSelect"
+            >
+                <option value="">-- 请选择 --</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-md-9" style="margin-bottom: 40px">
+
+        <h3>上传列表</h3>
+        <p>上传的图片数目： {{ uploader.queue.length }}</p>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th width="50%">名称</th>
+                <th ng-show="uploader.isHTML5">大小</th>
+                <th ng-show="uploader.isHTML5">进度</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="item in uploader.queue">
+                <td><strong>{{ item.file.name }}</strong></td>
+                <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                <td ng-show="uploader.isHTML5">
+                    <div class="progress progress-striped active" style="margin-bottom: 0;">
+                        <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                    </div>
+                </td>
+                <td class="text-center">
+                    <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                    <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                    <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+                </td>
+                <td nowrap>
+                    <button type="button" class="btn btn-success btn-xs" ng-click="item.upload()"
+                            ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                        <span class="glyphicon glyphicon-upload"></span> 上传
+                    </button>
+                    <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()"
+                            ng-disabled="!item.isUploading">
+                        <span class="glyphicon glyphicon-ban-circle"></span> 取消
+                    </button>
+                    <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
+                        <span class="glyphicon glyphicon-trash"></span> 移除
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div>
+            <div>
+                总进度：
+                <div class="progress progress-striped active" style="">
+                    <div class="progress-bar" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-success btn-s" ng-click="uploader.uploadAll()"
+                    ng-disabled="!uploader.getNotUploadedItems().length">
+                <span class="glyphicon glyphicon-upload"></span> 上传所有图片
+            </button>
+            <button type="button" class="btn btn-warning btn-s" ng-click="uploader.cancelAll()"
+                    ng-disabled="!uploader.isUploading">
+                <span class="glyphicon glyphicon-ban-circle"></span> 取消上传图片
+            </button>
+            <button type="button" class="btn btn-danger btn-s" ng-click="uploader.clearQueue()"
+                    ng-disabled="!uploader.queue.length">
+                <span class="glyphicon glyphicon-trash"></span> 移除所有图片
+            </button>
+        </div>
+    </div>
+</div>
+<!--显示部分-->
+<div class="row" ng-show="showFileItemAttr">
+    <ul id="list" class="list-unstyled ">
+        <li class="col-md-2 " style="padding-left: 0;padding-right: 0 ;" ng-repeat="item in currentPictureItems">
+            <div class="imgHW">
+                <div style="margin-bottom: 5px">
+                    <button class="btn btn-default btn-sm glyphicon glyphicon-trash " role="menuitem" tabindex="-1"
+                            type="button" ng-click="deletePicture(item.id)"></button>
+                    <a style="color:#515151" ng-href="{{item.img}}" download="{{item.name}}">
+                        <button class="btn btn-default btn-sm glyphicon glyphicon-download-alt" role="menuitem"
+                                tabindex="-1" type="button"></button>
+                    </a>
+                </div>
+                <a href="{{item.img}}" target=_blank><img class="imgItem" ng-src={{item.img}} title="{{item.name}}" alt="{{item.name}}"></a>
+                <div class="textItem" title="{{item.name}}">{{item.name}}</div>
+            </div>
+
+
+        </li>
+    </ul>
+</div>
+<!--分页bar-->
+<div class="row">
+    <table ng-show="!(hitText=='' || hitText=='没有找到符合的图片')">
+        <tr>
+            <td colspan="7">
+                <nav style="float:left;">
+                    <ul class="pagination" style="width:100%;">
+                        <li>
+                            <p style="float:left;padding:6px 12px;">总记录数:{{pagging.pageTotal}}</p>
+                            <p style="float:left;padding:6px 12px;">每页显示:</p>
+                            <select class="form-control" style="width:100px;float:left;" ng-model="pagging.pageSize"
+                                    ng-change="paginate()">
+                                <option value="12">12</option>
+                                <option value="18">18</option>
+                                <option value="36">36</option>
+                                <option value="72">72</option>
+                            </select>
+                        </li>
+                    </ul>
+                </nav>
+                <nav style="float:right;">
+                    <uib-pagination boundary-links="true" total-items="pagging.pageTotal"
+                                    items-per-page="pagging.pageSize" ng-model="pagging.pageIndex"
+                                    max-size="pagging.maxSize" force-ellipses="true" class="pagination"
+                                    previous-text="上一页" next-text="下一页" first-text="首页" last-text="末页"
+                                    ng-change="paginate()"></uib-pagination>
+                </nav>
+            </td>
+        </tr>
+    </table>
+</div>

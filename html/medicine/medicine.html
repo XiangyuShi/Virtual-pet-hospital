@@ -1,0 +1,133 @@
+<style>
+    .SearchTable {
+        width: 100%;
+        border: none;
+    }
+
+    .SearchTable tr td {
+        padding: 0.7rem;
+        line-height: 1.6;
+    }
+
+    .tab-content p {
+        color: red;
+    }
+
+    .errorInfo {
+        float: left;
+        margin-top: 5px;
+        margin-left: 5px;
+        color: red;
+    }
+</style>
+<div>
+    <div class="tab-content">
+        <div class="panel panel-default">
+            <div class="panel-heading">药品管理</div>
+            <div class="panel-body" style="padding:5px 10px 10px 10px;">
+                <div style="float:left;width:30%;border-right:1px solid #EEE; min-height:700px;overflow:auto;padding-right:10px;">
+                    <div class="panel-body">
+                        <div data-angular-treeview="true"
+                             data-tree-id="tree"
+                             data-tree-model="resultSet"
+                             data-node-id="id"
+                             data-node-label="name"
+                             data-node-children="medicines"
+                             data-show-trash="false">
+                        </div>
+                    </div>
+                </div>
+                <div style="float:left;width:70%;min-height:700px;overflow:auto;padding-left:10px;padding-top:10px;">
+                    <form name="tableForm" ng-submit="saveNode(tableForm.$valid)" novalidate>
+                        <div class="row">
+                            <button type="button" class="btn btn-primary" ng-click="addTypeNode();">新增大类</button>
+                            <button type="button" class="btn btn-primary" ng-click="addNode();">新增药品</button>
+                            <button type="button" class="btn btn-warning" ng-disabled="!selectedNode.id"
+                                    ng-click="delNode(selectedNode);">删&nbsp;除
+                            </button>
+                        </div>
+                        <table class="SearchTable" id="formTable">
+                            <tr style="display:none;">
+                                <td width="100">
+                                    id：
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" id="id" name="id" style="width:300px;"
+                                           ng-model="selectedNode.id">
+                                </td>
+                            </tr>
+                            <tr id="trType">
+                                <td width="150" id="tdTypeName">
+                                    药品大类:
+                                </td>
+                                <td>
+                                    <select class="form-control" id="fatherId" name="fatherId" ng-disabled="!add"
+                                            placeholder="" style="width:300px;float:left;"
+                                            required ng-model="selectedNode.fatherId">
+                                        <option value=""> -- 请选择 --</option>
+                                        <option ng-repeat="r in typeNodeSet" value="{{r.id}}">{{r.name}}</option>
+                                    </select>
+                                    <p ng-show="tableForm.fatherId.$error.required" class="errorInfo">药品大类不能为空</p>
+                                </td>
+                            </tr>
+                            <tr id="trMedicine">
+                                <td width="150" id="tdMedicineName">
+                                    药品名称:
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" id="name" name="name"
+                                           placeholder="" style="width:300px;float: left;"
+                                           ng-model="selectedNode.name" required
+                                           ng-minlength="1" ng-maxlength="20">
+                                    <p ng-show="tableForm.name.$error.required" class="errorInfo">名称不能为空</p>
+                                    <p ng-show="tableForm.name.$error.maxlength" class="errorInfo">名称长度至多为20位</p>
+                                </td>
+
+                            </tr>
+
+                        </table>
+                        <br>
+                        <div class=" col-md-4 col-md-offset-4">
+                            <button type="submit" class="btn btn-success ">保&nbsp;存</button>
+                            <button type="button" class="btn btn-info" ng-click="cancelNode(selectedNode);">取&nbsp;消
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <script type="text/ng-template" id="ModalNewTypeNode.html">
+        <form name="tableForm" class="form-horizontal" ng-submit="save(tableForm.$valid)" novalidate>
+            <div class="modal-header">
+                <h3 class="modal-title">新增药品大类</h3>
+            </div>
+            <div class="modal-body">
+                <table class="SearchTable">
+                    <tr>
+                        <td width="100">
+                            名称：
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" id="typeName" name="name"
+                                   placeholder="药品大类名称" style="width:300px;float: left;" ng-model="selectedNode.name"
+                                   required
+                                   ng-maxlength="20">
+                        </td>
+                        <td>
+                            <p ng-show="tableForm.name.$error.required" class="errorInfo">名称不能为空</p>
+                            <p ng-show="tableForm.name.$error.maxlength" class="errorInfo">名称长度至多为20位</p>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" style="width:100px;" type="submit">确认</button>
+                <button class="btn btn-info" style="width:100px;" type="button" ng-click="cancel()">取消</button>
+            </div>
+        </form>
+    </script>
+</div>

@@ -1,0 +1,114 @@
+﻿<div>
+    <div class="tab-content">
+        <div class="panel panel-default">
+            <div class="panel-heading">字典维护</div>
+            <div class="panel-body" style="padding:5px 10px 10px 10px;">
+                <div style="float:left;width:30%;border-right:1px solid #EEE; min-height:700px;overflow:auto;padding-right:10px;">
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" ng-click="loadTree();">Go!</button>
+                        </span>
+                        <input type="text" class="form-control" id="txtSearch" placeholder="Search for..." ng-model="searchText">
+                    </div>
+                    <div id="divTree"></div>
+                </div>
+                <div style="float:left;width:70%;min-height:700px;overflow:auto;padding-left:10px;padding-top:10px;">
+                    <form name="tableForm" ng-submit="saveNode(tableForm.$valid)" novalidate>
+                        <button type="button" class="btn btn-primary btn-lg" ng-click="addNode();">新增</button>
+                        <button type="submit" class="btn btn-primary btn-lg">保存</button>
+                        <button type="button" class="btn btn-primary btn-lg" ng-click="cancelNode(selectedNode);">取消</button>
+                        <button type="button" class="btn btn-primary btn-lg" ng-click="delNode(selectedNode);">删除</button>
+                        <table class="SearchTable" id="formTable" ng-model="selectedNode">
+                            <tr style="display:none;">
+                                <td width="100">
+                                    id：
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" id="id" name="id" style="width:300px;" ng-model="selectedNode.id">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    用户名：
+                                </td>
+                                <td>
+                                    <input type="text" ng-disabled="!add" class="form-control" id="name" name="name" placeholder="用户名" style="width:300px;" ng-model="selectedNode.name" required ng-minlength="1" ng-maxlength="20">
+                                    <p ng-show="tableForm.name.$error.minlength" class="errorInfo">用户名不合法</p>
+                                    <p ng-show="tableForm.name.$error.maxlength" class="errorInfo">用户名长度至多为20位</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    密码：
+                                </td>
+                                <td>
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="密码" style="width:300px;" ng-model="selectedNode.password" required ng-minlength="6" ng-maxlength="12">
+                                    <p ng-show="tableForm.password.$error.minlength" class="errorInfo">密码长度至少为6位</p>
+                                    <p ng-show="tableForm.password.$error.maxlength" class="errorInfo">密码长度至多为12位</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    确认密码：
+                                </td>
+                                <td>
+                                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="确认密码" style="width:300px;" ng-model="selectedNode.confirmPassword" required ng-minlength="6" ng-maxlength="12" ng-match="password">
+                                    <p ng-show="tableForm.confirmPassword.$error.minlength" class="errorInfo">密码长度至少为6位</p>
+                                    <p ng-show="tableForm.confirmPassword.$error.maxlength" class="errorInfo">密码长度至多为12位</p>
+                                    <p ng-show="tableForm.confirmPassword.$error.match" class="errorInfo">两次输入的密码不一致</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    邮箱：
+                                </td>
+                                <td>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="邮箱" style="width:300px;" ng-model="selectedNode.email" required>
+                                    <p ng-show="tableForm.email.$invalid" class="errorInfo">邮箱不合法</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    状态：
+                                </td>
+                                <td>
+                                    <select class="form-control" name="status" style="width:300px;" ng-model="selectedNode.status">
+                                        <option value="1">有效</option>
+                                        <option value="0">无效</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <!--<tr>
+                                <td>
+                                    下拉框：
+                                </td>
+                                <td>
+                                    <select class="form-control" placeholder="Email" style="width:300px;">
+                                        <option value="1">1</option>
+                                        <option value="1">2</option>
+                                    </select>
+                                </td>
+                            </tr>-->
+                            <!--<tr>
+                                <td>
+                                    下拉树：
+                                </td>
+                                <td>
+                                    <input id="parentTree" type="text" plugin-tree="{width:300,height:300,autoLoad:true,root:'根节点',multiple:false,postData:{},url:'',placeHolder:'请选择上级'}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    下拉树：
+                                </td>
+                                <td>
+                                    <input id="parentTreeMultiple" type="text" plugin-tree="{width:300,height:300,autoLoad:false,root:'根节点',multiple:true,postData:{},url:'',placeHolder:'请选择上级'}" />
+                                </td>
+                            </tr>-->
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

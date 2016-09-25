@@ -1,0 +1,209 @@
+﻿<style>
+    .errorInfo {
+        color: red;
+    }
+</style>
+<div style="padding:0 10px 0 10px;">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOne" style="cursor:pointer;" ng-click="toogleSearchPanel('collapseDiv')">
+            <h4 class="panel-title">
+                <span class="glyphicon glyphicon-chevron-right">考试查询</span>
+            </h4>
+        </div>
+        <div style="height: 0px;" class="panel-collapse collapse" id="collapseDiv" uib-collapse="isCollapsed">
+            <div class="panel-body">
+                <table class="SearchTable">
+                    <tr>
+                        <td>卷名:</td>
+                        <td><input type="text" class="form-control" ng-keydown="searchKeyDown($event)" id="name" name="name" placeholder="卷名" style="width:300px;" ng-model="postData.name" /></td>
+                        <td></td>
+                        <td>
+                            <span style="float:left;width:100px;text-align:center;">开始日期:</span>
+                            <input type="text" name="startDate" class="form-control" style="cursor:pointer;width:140px;float:left;" ng-model="postData.startDate" readonly bootstrapdatetime />
+                            <span style="float:left;width:100px;text-align:center;">结束日期:</span>
+                            <input type="text" name="endDate" class="form-control" style="cursor:pointer;width:140px;float:left;" ng-model="postData.endDate" readonly bootstrapdatetime />
+                        </td>
+                        <td style="text-align:right;">
+                            <button type="button" class="btn btn-primary" ng-click="loadData()">查询</button>
+                            <button type="button" class="btn btn-primary" ng-click="clear()">清空</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">考试列表</div>
+        <div class="panel-body">
+            <button type="button" class="btn btn-primary" ng-click="new()">新增考试</button>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>卷名</th>
+                        <th>总时间</th>
+                        <th>总题数</th>
+                        <th>总分</th>
+                        <!--<th>考卷类型</th>-->
+                        <th>开始日期</th>
+                        <th>结束日期</th>
+                        <th style="text-align:center;width:200px;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="p in data">
+                        <td>{{p.paper.name}}</td>
+                        <td>{{p.paper.totalMins}} 分钟</td>
+                        <td>{{p.paper.exams.length}}</td>
+                        <td>{{p.paper.totalScore}}</td>
+                        <!--<td>{{renderType(p.paper.type)}}</td>-->
+                        <td>{{p.startDate| date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                        <td>{{p.endDate| date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                        <td style="text-align:center;">
+                            <span style="cursor:pointer;" ng-show="p.status==0" class="glyphicon glyphicon-pencil" title="编辑" ng-click="edit(p)"></span><b ng-show="p.status==0">|</b>
+                            <span style="cursor:pointer;" ng-show="p.status!=0" class="glyphicon glyphicon-eye-open" title="查看成绩" ng-click="view(p.id)"></span>
+                            <span style="cursor:pointer;" ng-show="p.status==0" class="glyphicon glyphicon-remove" title="删除" ng-click="del(p.id)"></span>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="7">
+                            <nav style="float:left;">
+                                <ul class="pagination" style="width:100%;">
+                                    <li>
+                                        <p style="float:left;padding:6px 12px;">总记录数:{{pagging.pageTotal}}</p>
+                                        <p style="float:left;padding:6px 12px;">每页显示:</p>
+                                        <select class="form-control" style="width:100px;float:left;" ng-model="pagging.pageSize" ng-change="loadData()">
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                        </select>
+                                    </li>
+                                </ul>
+                            </nav>
+                            <nav style="float:right;">
+                                <uib-pagination boundary-links="true" total-items="pagging.pageTotal" items-per-page="pagging.pageSize" ng-model="pagging.pageIndex" max-size="pagging.maxSize" force-ellipses="true" class="pagination" previous-text="上一页" next-text="下一页" first-text="首页" last-text="末页" ng-change="loadData()"></uib-pagination>
+                            </nav>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+</div>
+<div>
+    <script type="text/ng-template" id="ModalNewTest.html">
+        <form name="tableForm" class="form-horizontal" ng-submit="save(tableForm.$valid)" novalidate>
+            <div class="modal-header">
+                <h3 class="modal-title">新增考试</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">选择考卷:</label>
+                    <div class="col-sm-6">
+                        <select class="form-control" id="formPaper" name="formPaper" ng-model="test.paperId" required>
+                            <option ng-repeat="paper in papers" value="{{paper.id}}">{{paper.name}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <p ng-show="tableForm.formPaper.$error.required" class="errorInfo" style="float:left;">考卷不可为空</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="formStartDate" class="col-sm-2 control-label">开始日期:</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="formStartDate" name="formStartDate" class="form-control" style="cursor:pointer;float:left;" ng-model="test.startDate" readonly bootstrapdatetime required />
+                    </div>
+                    <div class="col-sm-4">
+                        <p ng-show="tableForm.formStartDate.$error.required" class="errorInfo" style="float:left;">开始日期不可为空</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="formEndDate" class="col-sm-2 control-label">结束日期:</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="formEndDate" name="formEndDate" class="form-control" style="cursor:pointer;float:left;" ng-model="test.endDate" readonly bootstrapdatetime required />
+                    </div>
+                    <div class="col-sm-4">
+                        <p ng-show="tableForm.formEndDate.$error.required" class="errorInfo" style="float:left;">结束日期不可为空</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="formEndDate" class="col-sm-2 control-label">选择考生:</label>
+                    <div class="col-sm-10">
+                        <div style="height:200px;overflow:auto;border: 1px solid #ccc;" data-angular-treeview="true"
+                             data-tree-id="tree"
+                             data-tree-model="resultSet"
+                             data-node-id="id"
+                             data-node-label="name"
+                             data-node-children="children"
+                             data-show-trash="false"
+                             data-show-check="true"
+                             data-node-check="isCheck">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" style="width:100px;" type="submit">确认</button>
+                <button class="btn btn-warning" style="width:100px;" type="button" ng-click="cancel()">取消</button>
+            </div>
+        </form>
+    </script>
+</div>
+<div>
+    <script type="text/ng-template" id="ModalViewResult.html">
+        <div class="modal-header">
+            <h3 class="modal-title">查看考试成绩</h3>
+        </div>
+        <div class="modal-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>姓名</th>
+                        <th style="text-align:right;">总时间</th>
+                        <th style="text-align:right;">总题数</th>
+                        <th style="text-align:right;">总分</th>
+                        <th style="text-align:right;">得分</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="p in data">
+                        <td>{{p.user.name}}</td>
+                        <td style="text-align:right;">{{p.paper.totalMins}}分钟</td>
+                        <td style="text-align:right;">{{p.paper.totalQuestions}}</td>
+                        <td style="text-align:right;">{{p.paper.totalScore}}</td>
+                        <td style="text-align:right;">{{renderScore(p)}}</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="7">
+                            <nav style="float:left;">
+                                <ul class="pagination" style="width:100%;">
+                                    <li>
+                                        <p style="float:left;padding:6px 12px;">总记录数:{{pagging.pageTotal}}</p>
+                                        <p style="float:left;padding:6px 12px;">每页显示:</p>
+                                        <select class="form-control" style="width:100px;float:left;" ng-model="pagging.pageSize" ng-change="loadData()">
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                        </select>
+                                    </li>
+                                </ul>
+                            </nav>
+                            <nav style="float:right;">
+                                <uib-pagination boundary-links="true" total-items="pagging.pageTotal" items-per-page="pagging.pageSize" ng-model="pagging.pageIndex" max-size="pagging.maxSize" force-ellipses="true" class="pagination" previous-text="上一页" next-text="下一页" first-text="首页" last-text="末页" ng-change="loadData()"></uib-pagination>
+                            </nav>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" style="width:100px;" type="button" ng-click="cancel()">确认</button>
+        </div>
+    </script>
+</div>

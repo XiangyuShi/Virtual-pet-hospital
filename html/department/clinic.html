@@ -1,0 +1,37 @@
+<link rel="stylesheet" type="text/css" href="../css/jquery.treetable.css" />
+<link rel="stylesheet" type="text/css" href="../css/jquery.treetable.theme.default.css" />
+
+
+
+
+<div class="row">
+    <ol class="breadcrumb">
+        <li><a href="index.html#/clinic">职能管理</a></li>
+        <li class="active"> 科室-角色-操作管理</li>
+    </ol>
+    <script type="text/ng-template" id="tree_node">
+        <tr tt-node is-branch="node.type == '科室'">
+            <td><span ng-bind="node.name" style="cursor:pointer;"></span></td>
+            <td ng-bind="node.type"></td>
+            <td><button class="btn btn-success icon-margin-right10" ng-show="node.type == null" ng-click="editType(node)">编辑</button></td>
+        </tr>
+    </script>
+
+    <h4><i class="fa fa-book icon-margin-right10"></i>科室列表></h4>
+
+    <table class="tree-table" tt-table tt-params="dynamic_params" data-ng-init="init()">
+        <thead>
+        <tr>
+            <th>科室/角色名称</th>
+            <th> </th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+</div>
+
+
+
+

@@ -1,0 +1,85 @@
+﻿.PluginMaskDiv {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    z-index: 1000;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+    background: #fff;
+    text-align: center;
+    vertical-align: middle;
+    display: none;
+    overflow: hidden;
+}
+
+.PluginMaskloading {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+}
+
+    .PluginMaskloading div.PluginloadingImage {
+        left: 50%;
+        margin-left: -50px;
+        top: 50%;
+        margin-top: -50px;
+        position: fixed;
+        background-image: url("../images/loading.gif");
+        background-repeat: no-repeat;
+        background-repeat: repeat;
+        width: 150px;
+        height: 150px;
+    }
+
+.PluginContainer {
+    position: relative;
+    display: inline-block;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.PluginPanel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 160px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    font-size: 14px;
+    text-align: left;
+    background-color: #fff;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    overflow: auto;
+}
+
+.open > .PluginPanel {
+    display: block;
+}
+
+.SearchTable {
+    width: 100%;
+    border: none;
+}
+
+    .SearchTable tr td {
+        padding: 0.7rem;
+        line-height: 1.6;
+    }
+
+.errorInfo {
+    margin-top: 5px;
+    margin-left: 5px;
+}

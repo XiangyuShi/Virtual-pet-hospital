@@ -1,0 +1,219 @@
+<style>
+    .breadcrumb > li + li:before {
+        content: "\00a0";
+    }
+</style>
+<div class="row">
+    <ol class="breadcrumb">
+        <li class="active"> 病例管理</li>
+        <li class="active">&nbsp;</li>
+        <li style="float:right;cursor:pointer;"><i class="fa fa-reply" ng-click="backToCasePackage()">返回病例袋管理</i></li>
+    </ol>
+    <div class="row">
+        <div class="col-md-4">
+                <div class="form-group">
+                    <div class="input-group has-success">
+                        <input type="text" class="form-control" ng-model="packagename" placeholder="请输入病例袋查询信息" ng-keydown="searchKeyDown($event)">
+                        <div class="input-group-addon" ng-click="searchByPackageName(packagename)" style="cursor:pointer;"><i
+                                class="fa fa-search"></i>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+    <div class="col-md-4" ng-show="isPacketTree">
+        <div class="panel panel-default">
+            <div class="panel-heading">病例袋</div>
+            <div class="panel-body">
+                <div data-angular-treeview="true"
+                     data-tree-id="tree02"
+                     data-tree-model="casePacket"
+                     data-node-id="roleId"
+                     data-node-label="roleName"
+                     data-node-children="children"
+                     data-show-trash="true"
+                     data-node-collapse="true">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="panel panel-default" ng-show="isPacket">
+            <div class="panel-heading ">当前病例袋：{{currentPacket.roleName}}</div>
+            <div class="panel-body">
+                <div class="panel-heading panel panel-info ng-scope"><i class="fa fa-medkit icon-margin-right10"></i>新增病例
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>病种大类</label>
+                        <select class="form-control" ng-change="showDiseaseTypes(diseaseTypesForSelect)"
+                                ng-model="diseaseTypesForSelect"
+                                ng-options="diseaseTypesForSelect.name for diseaseTypesForSelect in selectValue.diseaseTypesForSelect">
+                            <option value=""> -- 请选择 --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>病种</label>
+                        <select class="form-control" ng-model="diseasesForSelect"
+                                ng-model="diseasesForSelect"
+                                ng-options="diseasesForSelect.name for diseasesForSelect in diseaseTypesForSelect.diseasesForSelect"
+                                ng-change="showDiseases(diseasesForSelect.name)">
+                            <option value=""> -- 请选择 --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-group has-success margin-top10">
+                            <div class="input-group-addon">病例名称</div>
+                            <input type="text" class="form-control" ng--model="newCaseToPackage.name"
+                                   placeholder="Name">
+                            <div class="input-group-addon">
+                                <i class="fa fa-plus" ng-click="addCase(newCaseToPackage.name)">新增</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default" ng-show="isNotPacket">
+            <div class="panel-heading">
+                <div class="row ng-scope">
+                    <div class="col-md-6">
+                        当前病例：{{currentPacketName}}------{{currentCaseName}}
+                    </div>
+                    <div class="col-md-6">
+                        <i class="fa fa-medkit pull-right">所属病种 : {{diseaseType}}</i>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <form name="caseForm" ng-submit="editCase(caseForm.$valid)" novalidate>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>病种</label>
+                            <input type="text" class="form-control" value={{diseaseType}} readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>病例名称</label>
+                            <input type="text" name="caseName" class="form-control" ng-model="caseName" required
+                                   ng-maxlength="20"/>
+                            <p ng-show="caseForm.caseName.$error.required" class="errorInfo">病例名称不可为空</p>
+                            <p ng-show="caseForm.caseName.$error.maxlength" class="errorInfo">病例名称长度至多为20位</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary margin-top12"
+                                    ng-disabled="tableForm.$invalid">修改
+                            </button>
+                        </div>
+                        <div class="col-md-8"></div>
+                    </div>
+                </form>
+                <uib-tabset active="active" style="padding:5px 10px 10px 10px;">
+
+                    <uib-tab index="$index + 1" ng-repeat="phase in phases" heading="{{phase.name}}" active="tab.active"
+                             disable="tab.disabled" ng-click="changeTab(tab.value);">
+                        <div class="panel panel-info">
+                            <div class="panel-heading"><i class="fa fa-medkit icon-margin-right10"></i>已有流程</div>
+                            <div class="panel-body">
+                                <div data-angular-treeview="true"
+                                     data-tree-id="tree01"
+                                     data-tree-model="phase.roleList"
+                                     data-node-id="roleId"
+                                     data-node-label="roleName"
+                                     data-node-children="children"
+                                     data-show-trash="true">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-danger">
+                            <div class="panel-heading"><i class="fa fa-plus-circle icon-margin-right10"></i>新增流程</div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>科室</label>
+                                        <select class="form-control" ng-change="showDepartment(department)"
+                                                ng-model="department"
+                                                ng-options="department.name for department in selectValue.departmentsForSelect">
+                                            <option value="">  请选择 </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>角色</label>
+                                        <select class="form-control" ng-change="showRole(role)" ng-model="role"
+                                                ng-options="role.name for role in selectValue.rolesForSelect">
+                                            <option value="">  请选择 </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>操作</label>
+                                        <form class="form-inline">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">操作名称</div>
+                                                    <input type="text" ng-model="operateName" class="form-control">
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>费用</label>
+                                        <form class="form-inline">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">价格</div>
+                                                    <input type="number" ng-model="operateFee" class="form-control" placeholder="默认为0元">
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 col-md-offset-4">
+                                        <div class="btn btn-success margin-top12"
+                                             ng-click="addOperate(operateName,phase.id,operateFee)">新增
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </uib-tab>
+
+                    <!--<uib-tab index="6" heading="病例基本信息" active="tab.active" disable="tab.disabled">-->
+                    <!--<form name="caseForm" ng-submit="editCase(caseForm.$valid)" novalidate>-->
+                    <!--<div class="row">-->
+                    <!--<div class="form-group">-->
+                    <!--<label>病种</label>-->
+                    <!--<input type="text" class="form-control" value={{diseaseType}} readonly>-->
+                    <!--</div>-->
+                    <!--<div class="form-group">-->
+                    <!--<label>病例名称</label>-->
+                    <!--<input type="text" name="caseName" class="form-control" ng-model="caseName"  required ng-maxlength="20" ng-change="updateValueInScope()" readonly/>-->
+                    <!--<p ng-show="caseForm.caseName.$error.required" class="errorInfo">病例名称不可为空</p>-->
+                    <!--<p ng-show="caseForm.caseName.$error.maxlength" class="errorInfo">病例名称长度至多为20位</p>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="row">-->
+                    <!--<div class="col-md-3">-->
+                    <!--<button type="submit" class="btn btn-primary col-md-12"-->
+                    <!--ng-disabled="tableForm.$invalid">修改-->
+                    <!--</button>-->
+                    <!--</div>-->
+                    <!--<div class="col-md-3">-->
+                    <!--<button type="reset" class="btn btn-primary col-md-12">取消</button>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--</form>-->
+                    <!--</uib-tab>-->
+                </uib-tabset>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,254 @@
+<div class="row">
+    <ol class="breadcrumb">
+        <li><a href="index.html#/department">科室管理</a></li>
+        <li class="index.html#/department">科室介绍</li>
+        <li class="active">职责管理</li>
+    </ol>
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">科室1-角色1</div>
+            <div class="panel-body">
+                <div
+                        data-angular-treeview="true"
+                        data-tree-id="tree02"
+                        data-tree-model="operateList"
+                        data-node-id="roleId"
+                        data-node-label="roleName"
+                        data-node-children="children" >
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">新增文字组</div>
+            <div class="panel-body">
+
+                <div class="input-group has-success margin-top10">
+                    <div class="input-group-addon">文字组名称</div>
+                    <input type="text" class="form-control" ng-model="wordGroupName" placeholder="Name">
+                    <div class="input-group-addon"><i class="fa fa-plus" ng-click="addWordGroup(wordGroupName)">新增</i></div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">新增图片组</div>
+            <div class="panel-body">
+                <div class="input-group has-success margin-top10">
+                    <div class="input-group-addon">文字组名称</div>
+                    <input type="text" class="form-control" ng-model="picGroupName" placeholder="Name">
+                    <div class="input-group-addon"><i class="fa fa-plus" ng-click="addPicGroup(picGroupName)">新增</i></div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">新增视频组</div>
+            <div class="panel-body">
+                <div class="input-group has-success margin-top10">
+                    <div class="input-group-addon">视频组名称</div>
+                    <input type="text" class="form-control" ng-model="videoGroupName" placeholder="Name">
+                    <div class="input-group-addon"><i class="fa fa-plus" ng-click="addVideoGroup(videoGroupName)">新增</i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+
+
+        <div class="panel panel-default" ng-show = "isWord">
+            <div class="panel-heading">文字1</div>
+            <div class="panel-body">
+                <div class="panel panel-info">
+                    <div class="panel-heading"><i class="fa fa-plus-circle icon-margin-right10"></i>编辑文字</div>
+                    <div class="panel-body">
+                        <div class="well">文字1内容</div>
+                        <div class="form-group">
+                            <textarea class="form-control" rows="3"  placeholder="输入文字"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success pull-right" >保存</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="panel panel-default" ng-show = "isWordGroup">
+            <div class="panel-heading">文字1</div>
+            <div class="panel-body">
+                <div class="panel panel-danger">
+                    <div class="panel-heading"><i class="fa fa-plus-circle icon-margin-right10"></i>新增文字</div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">文字名称</span>
+                                <input type="text" class="form-control" >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <textarea class="form-control" rows="3"  placeholder="输入文字"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success pull-right" >提交</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="panel panel-default" ng-show = "isPicture">
+            <div class="panel-heading">图片1</div>
+            <div class="panel-body">
+                <div class="panel panel-info">
+                    <div class="panel-heading"><i class="fa fa-plus-circle icon-margin-right10"></i>编辑图片</div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <button class="btn btn-default" type="button">删除</button>
+                            <button class="btn btn-default" type="button">删除</button>
+                            <button class="btn btn-default" type="button">删除</button>
+                            <button class="btn btn-default" type="button">删除</button>
+
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success" ng-click="show=!show" >新增</button>
+                        </div>
+                        <div class="form-group" ng-show="show">
+                            <button class="btn btn-default" type="button">添加</button>
+                            <button class="btn btn-default" type="button">添加</button>
+                            <button class="btn btn-default" type="button">添加</button>
+                            <button class="btn btn-default" type="button">添加</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="panel panel-default" ng-show = "isPictureGroup">
+            <div class="panel-heading">图片1</div>
+            <div class="panel-body">
+                <div class="panel panel-danger">
+                    <div class="panel-heading"><i class="fa fa-plus-circle icon-margin-right10"></i>新增图片</div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">图片名称</span>
+                                <input type="text" class="form-control" >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-group">
+                                <button class="btn btn-default" type="button">选择</button>
+                                <button class="btn btn-default" type="button">选择</button>
+                                <button class="btn btn-default" type="button">选择</button>
+                                <button class="btn btn-default" type="button">选择</button>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success pull-right" >提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="panel panel-default" ng-show = "isVideo">
+            <div class="panel-heading">视频1</div>
+            <div class="panel-body">
+                <div class="panel panel-info">
+                    <div class="panel-heading"><i class="fa fa-plus-circle icon-margin-right10"></i>编辑视频</div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <button class="btn btn-default" type="button">删除</button>
+                            <button class="btn btn-default" type="button">删除</button>
+                            <button class="btn btn-default" type="button">删除</button>
+                            <button class="btn btn-default" type="button">删除</button>
+
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success" ng-click="show=!show" >新增</button>
+                        </div>
+                        <div class="form-group" ng-show="show">
+                            <button class="btn btn-default" type="button">选择</button>
+                            <button class="btn btn-default" type="button">选择</button>
+                            <button class="btn btn-default" type="button">选择</button>
+                            <button class="btn btn-default" type="button">选择</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default" ng-show = "isVideoGroup">
+            <div class="panel-heading">视频1</div>
+            <div class="panel-body">
+                <div class="panel panel-danger">
+                    <div class="panel-heading"><i class="fa fa-plus-circle icon-margin-right10"></i>新增视频</div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">文字名称</span>
+                                <input type="text" class="form-control" >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-group">
+                                <button class="btn btn-default" type="button">选择</button>
+                                <button class="btn btn-default" type="button">选择</button>
+                                <button class="btn btn-default" type="button">选择</button>
+                                <button class="btn btn-default" type="button">选择</button>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success pull-right" >提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="text/ng-template" id="myModalContent.html">
+        <div class="modal-header">
+            <h3 class="modal-title">I'm a modal!</h3>
+        </div>
+        <div class="modal-body">
+            <!--<ul>-->
+            <!--<li ng-repeat="item in items">-->
+            <!--<a href="#" ng-click="$event.preventDefault(); selected.item = item">{{ item }}</a>-->
+            <!--</li>-->
+            <!--</ul>-->
+            <!--Selected: <b>{{ selected.item }}</b>-->
+
+            <form name="outerForm" class="tab-form-demo">
+                <uib-tabset active="activeForm">
+                    <uib-tab index="0" heading="Form Tab">
+                        <ng-form name="nestedForm">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" class="form-control" required ng-model="model.name"/>
+                            </div>
+                        </ng-form>
+                    </uib-tab>
+                    <uib-tab index="1" heading="Tab One">
+                        Some Tab Content
+                    </uib-tab>
+                    <uib-tab index="2" heading="Tab Two">
+                        More Tab Content
+                    </uib-tab>
+                </uib-tabset>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
+
+</div>

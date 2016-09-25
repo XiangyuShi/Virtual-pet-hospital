@@ -1,0 +1,250 @@
+<link rel="stylesheet" type="text/css" href="../css/jquery.treetable.css"/>
+<link rel="stylesheet" type="text/css" href="../css/jquery.treetable.theme.default.css"/>
+
+<div class="row">
+    <ol class="breadcrumb">
+        <!--<li><a href="index.html#/appliance">器械设备耗材管理</a></li>-->
+        <li class="active"> 器械设备耗材管理</li>
+    </ol>
+</div>
+<div class="row">
+    <div class="col-md-12" ng-show="isType">
+        <script type="text/ng-template" id="tree_node">
+            <tr tt-node is-branch="node.type == '大类'">
+                <!--<td><span ng-bind="node.sequence" ></span></td>-->
+                <td><span ng-bind="node.name" style="cursor:pointer;" ></span></td>
+                <td ng-bind="node.type"></td>
+                <td>
+                    <button class="btn btn-info icon-margin-left10" style="float:left" ng-show="node.type == '大类'"
+                            ng-click="newSumType(node,500)">新增
+                    </button>
+                    <button class="btn btn-info icon-margin-left10"  style="float:left" ng-show="node.type != '大类'"
+                            ng-click="editTypeDetail(node)">管理
+                    </button>
+                    <button class="btn btn-success icon-margin-left10" style="float:left" ng-click="editType(node,500)">编辑</button>
+                    <button class="btn btn-warning icon-margin-left10" style="float:left" ng-click="deleteDisease(node)">删除</button>
+                    <button class="btn btn-info icon-margin-left10" style="float:left"  ng-show="node.type == '大类'"
+                            ng-click="sortAppliance(node)">小类排序
+                    </button>
+                </td>
+            </tr>
+        </script>
+        <h4><i class="fa fa-medkit icon-margin-right10"></i>器械设备耗材列表>
+            <button class="btn btn-primary pull-right " style="margin:10px 10px 10px 10px;"
+                    ng-click="newSumType('',500)">新增
+            </button>
+            <button class="btn btn-primary pull-right " style="margin:10px 10px 10px 10px;"
+                    ng-click="sortParentAppliance()">大类排序
+            </button>
+        </h4>
+        <table class="tree-table" tt-table tt-params="dynamic_params" data-ng-init="init()">
+            <thead>
+            <tr>
+                <!--<th>序号</th>-->
+                <th width="20%">器材设备类别</th>
+                <th width="20%">类型</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div class="col-md-12" ng-show="!isType">
+        <div class="panel panel-info">
+            <div class="panel-heading">{{items.name}}列表</div>
+            <div class="panel-body">
+                <button class="btn btn-primary pull-right col-md-2" style="margin:10px 10px 10px 10px;"
+                        ng-click="newAppliance(500)">新增
+                </button>
+                <button class="btn btn-primary pull-right col-md-2" style="margin:10px 10px 10px 10px;"
+                        ng-click="back()">返回
+                </button>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>器械名称</th>
+                        <th style="text-align:center;width:200px;">操作</th>
+                        <th style="width:30%;"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in tms">
+                        <td>{{item.name}}</td>
+                        <td style="text-align:center;">
+                    <span style="cursor:pointer;" class="glyphicon glyphicon-pencil" title="改名"
+                          ng-click="renameAppliance(item,500)"></span>|
+                    <span style="cursor:pointer;" class="glyphicon glyphicon-folder-open" title="编辑"
+                          ng-click="editAppliance(item)"></span>|
+                    <span style="cursor:pointer;" class="glyphicon glyphicon-remove" title="删除"
+                          ng-click="deleteAppliance(item);"></span>
+                        </td>
+                        <td><input type="hidden" class="form-control" id="id" name="id" style="width:300px;"
+                                   ng-model="item.id">
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="6">
+                            <nav style="float:left;">
+                                <ul class="pagination" style="width:100%;">
+                                    <li>
+                                        <p style="float:left;padding:6px 12px;">总记录数:{{pagging.pageTotal}}</p>
+                                        <p style="float:left;padding:6px 12px;">每页显示:</p>
+                                        <select class="form-control" style="width:100px;float:left;"
+                                                ng-model="pagging.pageSize"
+                                                ng-change="paginate()">
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                        </select>
+                                    </li>
+                                </ul>
+                            </nav>
+                            <nav style="float:right;">
+                                <uib-pagination boundary-links="true" total-items="pagging.pageTotal"
+                                                items-per-page="pagging.pageSize" ng-model="pagging.pageIndex"
+                                                max-size="pagging.maxSize" force-ellipses="true" class="pagination"
+                                                previous-text="上一页" next-text="下一页" first-text="首页" last-text="末页"
+                                                ng-change="paginate()"></uib-pagination>
+                            </nav>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/ng-template" id="applianceTypeNewContent.html">
+    <div class="modal-header">
+        <h3 ng-show="items.parentName!=''" class="modal-title">新增器械小类</h3>
+        <h3 ng-show="items.parentName==''" class="modal-title">新增器械大类</h3>
+    </div>
+    <form name="tableForm" novalidate>
+        <div class="modal-body">
+            <div class="form-group">
+                <label ng-show="items.parentName==''">器械大类名称</label>
+                <div class="form-group" ng-show="items.parentName!=''">
+                    <label>器械大类 : </label> <label>{{items.name}}</label>
+                </div>
+                <label ng-show="items.parentName!=''">器械名称</label>
+                <input type="text" name="newname" class="form-control" required ng-model="items.detailTypeName"/>
+                <p ng-show="tableForm.newname.$error.required" class="errorInfo">不可为空</p>
+            </div>
+        </div>
+        <div class="modal-footer diseaseTypeBtn">
+            <button class="btn btn-primary" type="button" ng-disabled="tableForm.$invalid" ng-click="ok()">保存
+            </button>
+            <button class="btn btn-warning" type="button" ng-click="cancel()">取消</button>
+        </div>
+    </form>
+</script>
+
+<script type="text/ng-template" id="applianceTypeEditContent.html">
+    <div class="modal-header">
+        <h3 class="modal-title">{{items.name}}</h3>
+    </div>
+    <form name="tableForm" novalidate>
+        <div class="modal-body">
+
+            <div class="form-group" ng-show="items.parentName!=null">
+                <label>器械大类 : </label> <label>{{items.parentName}}</label>
+            </div>
+            <div class="form-group" ng-show="items.parentName!=null">
+                <label>器械小类名称</label>
+                <input type="text" name="name" class="form-control" required ng-model="items.name" required/>
+                <p ng-show="tableForm.name.$error.required" class="errorInfo">不可为空</p>
+            </div>
+            <div class="form-group" ng-show="items.parentName ==null">
+                <label>器械大类名称</label>
+                <input type="text" name="name" class="form-control" required ng-model="items.name" required/>
+                <p ng-show="tableForm.name.$error.required" class="errorInfo">不可为空</p>
+            </div>
+        </div>
+        <div class="modal-footer diseaseTypeBtn">
+            <button class="btn btn-primary" type="button" ng-disabled="tableForm.$invalid"  ng-click="ok()">保存
+            </button>
+            <button class="btn btn-warning" type="button" ng-click="cancel()">取消</button>
+        </div>
+    </form>
+</script>
+
+<script type="text/ng-template" id="applianceNewContent.html">
+    <div class="modal-header">
+        <h3 class="modal-title">新增器械</h3>
+    </div>
+    <form name="tableForm" novalidate>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>器械名称</label>
+                <input type="text" name="newname" class="form-control" required ng-model="appliance.name"/>
+                <p ng-show="tableForm.newname.$error.required" class="errorInfo">不可为空</p>
+            </div>
+        </div>
+        <div class="modal-footer diseaseTypeBtn">
+            <button class="btn btn-primary" type="button" ng-disabled="tableForm.$invalid" ng-click="ok()">保存
+            </button>
+            <button class="btn btn-warning" type="button" ng-click="cancel()">取消</button>
+        </div>
+    </form>
+</script>
+
+<script type="text/ng-template" id="applianceEditContent.html">
+    <div class="modal-header">
+        <h3 class="modal-title">{{appliance.name}}</h3>
+    </div>
+    <form name="tableForm" novalidate>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>器械名称</label>
+                <input type="text" name="name" class="form-control" required ng-model="appliance.name" required/>
+                <p ng-show="tableForm.name.$error.required" class="errorInfo">不可为空</p>
+            </div>
+        </div>
+        <div class="modal-footer diseaseTypeBtn">
+            <button class="btn btn-primary" type="button" ng-disabled="tableForm.$invalid" ng-click="ok()">保存
+            </button>
+            <button class="btn btn-warning" type="button" ng-click="cancel()">取消</button>
+        </div>
+    </form>
+</script>
+
+<script type="text/ng-template" id="parentApplianceSort.html">
+    <div class="modal-header">
+        <h3 class="modal-title">大类排序</h3>
+    </div>
+    <div style="margin-top: 15px; margin-left: 10px" class="block__list_words">
+
+        <ul ng-sortable="{handle: '.drag-handle', animation: 150,onUpdate:sortUpdate}">
+            <li class draggable="false" ng-repeat="item in tmps"><span class="drag-handle">☰</span>{{item.name}}</li>
+        </ul>
+    </div>
+
+    <div class="modal-footer diseaseTypeBtn">
+        <button class="btn btn-primary" type="button" ng-click="ok()">保存
+        </button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">取消</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="applianceSort.html">
+    <div class="modal-header">
+        <h3 class="modal-title">小类排序</h3>
+    </div>
+    <div style="margin-top: 15px; margin-left: 10px" class="block__list_words">
+
+        <ul ng-sortable="{handle: '.drag-handle', animation: 150,onUpdate:sortUpdate}">
+            <li class draggable="false" ng-repeat="item in mtmps"><span class="drag-handle">☰</span>{{item.name}}</li>
+        </ul>
+    </div>
+
+    <div class="modal-footer diseaseTypeBtn">
+        <button class="btn btn-primary" type="button" ng-click="ok()">保存
+        </button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">取消</button>
+    </div>
+</script>

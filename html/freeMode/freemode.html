@@ -1,0 +1,38 @@
+<style>
+    .table th, .table td {
+        text-align: center;
+    }
+
+    .table-hover{
+        background-color: #F9F9F9;
+    }
+    .table-hover > tbody > tr:hover > td,
+    .table-hover > tbody > tr:hover > th {
+        background-color: #EEEE66;
+    }
+</style>
+<div class="row ">
+    <ol class="breadcrumb">
+        <li class="active"> 自由学习模式管理</li>
+    </ol>
+    <h4><i class="fa fa-book icon-margin-right10"></i>科室列表></h4>
+    <div class="col-md-8">
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th class="col-md-6">科室名称</th>
+            <th class="col-md-6">操作</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr ng-repeat="item in departmentItems">
+            <td>{{item.name}}</td>
+            <td>
+                <button type="button" class="btn btn-success" ng-click="editContent(item.id)">编辑</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+</div>

@@ -1,0 +1,148 @@
+<style>
+    .SearchTable {
+        width: 100%;
+        border: none;
+    }
+
+    .SearchTable tr td {
+        padding: 0.7rem;
+        line-height: 1.6;
+    }
+
+    .errorInfo {
+        margin-top: 5px;
+        margin-left: 5px;
+        float: left;
+    }
+
+    .tab-content p {
+        color: red;
+    }
+
+    .ctl {
+        table-layout: fixed;
+    }
+
+    .ctl td {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        padding: 2px;
+    }
+
+    .breadcrumb > li + li:before {
+        content: "\00a0";
+    }
+
+    .contentstyle {
+        overflow-y: auto;
+        height: 400px;
+    }
+
+    .imgHW {
+        height: 200px;
+        width: 100px;
+    }
+</style>
+
+
+<html>
+<body>
+<div class="row ng-scope">
+    <ol class="breadcrumb">
+        <li class="active">知识点编辑</li>
+        <li style="float:right;cursor:pointer;"><i class="fa fa-reply" ng-click="back()">返回</i></li>
+    </ol>
+</div>
+<div>
+    <div class="tab-content row">
+        <div class="panel panel-default">
+            <div style="float:left;width:70%;min-height:100px;padding-left:10px;padding-top:10px;">
+                <form name="tableForm" ng-submit="save(tableForm.$valid)" novalidate>
+                    <table class="SearchTable" id="formTable" ng-model="freeExamName">
+                        <tr>
+                            <td style="width:150px;">
+                                标题*：
+                            </td>
+                            <td>
+                                <input type="text" ng-disabled="edit" class="form-control" id="name" name="name"
+                                       placeholder="标题" style="width:300px;float:left;" ng-model="freeExamName"
+                                       required ng-maxlength="50">
+                                <p ng-show="tableForm.name.$error.required" class="errorInfo">标题不能为空</p>
+                                <p ng-show="tableForm.name.$error.maxlength" class="errorInfo">标题长度至多为50位</p>
+                            </td>
+                            <td>
+                                <div style="text-align:center;">
+                                    <button type="submit" class="btn btn-primary btn" ng-show="!view">保存</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="panel panel-info contentstyle ">
+            <div class="panel-heading">知识点内容</div>
+            <div class="panel-body">
+                <div ng-repeat="item in textsContent">
+                    <div>标题:{{item.name}}</div>
+                    <div>内容：{{item.content}}</div>
+                </div>
+                <div ng-repeat="items in pictureGroupsContent">
+                    <div>图片组名称：{{items.name}}</div>
+                    <div ng-repeat="item in items.pictures track by $index">
+                        <img class="imgHW" ng-src={{item.img}} title="{{item.name}}" alt="{{item.name}}"></div>
+                </div>
+                <div ng-repeat="items in videoGroupsContent">
+                    <div>视频组名称：{{items.name}}</div>
+                    <div ng-repeat="item in items.videos track by $index">
+                        <video ng-src="{{trustSrc(item.video)}}" title="{{item.name}}" controls="controls">
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <button type="button" class="btn btn-primary btn" ng-click="editContent()">编辑内容</button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <div class=" panel panel-success contentstyle">
+            <div class="panel-heading">答案</div>
+            <div class="panel-body">
+                <div ng-repeat="item in textsAnswer">
+                    <div>标题:{{item.name}}</div>
+                    <div>内容：{{item.content}}</div>
+                </div>
+                <div ng-repeat="items in pictureGroupsAnswer">
+                    <div>图片组名称：{{items.name}}</div>
+                    <div ng-repeat="item in items.pictures track by $index">
+                        <img class="imgHW" ng-src={{item.img}} title="{{item.name}}" alt="{{item.name}}"></div>
+                </div>
+                <div ng-repeat="items in videoGroupsAnswer">
+                    <div>视频组名称：{{items.name}}</div>
+                    <div ng-repeat="item in items.videos track by $index">
+                        <video ng-src="{{trustSrc(item.video)}}"  title="{{item.name}}" controls="controls">
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+        <button type="button" class="btn btn-primary" ng-click="editAnswer()">编辑答案</button>
+    </div>
+</div>
+</body>
+</html>

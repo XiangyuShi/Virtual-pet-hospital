@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <script src="../js/lib/public/jquery-1.11.1.min.js"></script>
+    <script src="../js/jquery.cookie.js"></script>
+    <script src="../js/common.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var token = GetQueryString('token');
+            if (token) {
+                var data = token;
+                $.ajax({
+                    url: constVar.baseUrl + 'users/userTokenLogin?rd=' + Math.random(),
+                    type: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json;charset=utf-8',
+                    headers: {
+                        "Authorization": "admin"
+                    },
+                    data: JSON.stringify(data),
+                    success: function (d) {
+                        if (d.meta.code == '200') {
+                            var userCookie = { token: d.data.tokenId, user: d.data };
+                            $.cookie(constVar.userCookie, JSON.stringify(userCookie));
+                            location.href = "index.html";
+                        }
+                        else {
+                            location.href = constVar.loginUrl;
+                        }
+                    },
+                    error: function (xmlHttpRequest, error, exception) {
+                    }
+                });
+            }
+            else {
+                location.href = constVar.loginUrl;
+            }
+        });
+    </script>
+</head>
+<body>
+    登入中...
+</body>
+</html>

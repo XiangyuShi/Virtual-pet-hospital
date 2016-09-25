@@ -1,0 +1,208 @@
+<style>
+    .breadcrumb > li + li:before {
+        content: "\00a0";
+    }
+    .SearchTable {
+        width: 100%;
+        border: none;
+    }
+
+    .SearchTable tr td {
+        padding: 0.7rem;
+        line-height: 1.6;
+    }
+
+    .errorInfo {
+        margin-top: 5px;
+        margin-left: 5px;
+    }
+
+    .ctl {
+        table-layout: fixed;
+    }
+
+    .ctl td {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        padding: 2px;
+    }
+
+</style>
+<div>
+    <div class="tab-content">
+        <ol class="breadcrumb">
+            <li class="active" ng-model="departmentName"> {{departmentName}}</li>
+            <li class="active">&nbsp;</li>
+            <li style="float:right;cursor:pointer;"><i class="fa fa-reply" ng-click="back()">返回</i></li>
+        </ol>
+        <div class="panel panel-default">
+            <div class="col-md-12" style="padding:10px;">
+                <button type="button" class="btn btn-primary" ng-click="newModule()">新增模块</button>
+                <button type="button" class="btn btn-primary" ng-click="editModule()">修改模块</button>
+                <button type="button" class="btn btn-primary" ng-click="deleteModule()">删除模块</button>
+            </div>
+
+            <uib-tabset active="active" style="padding:5px 10px 10px 10px;">
+                <uib-tab index="$index + 1" ng-repeat="tab in tabs" on-finish-render="lockTab()" heading="{{tab.name}}" active="tab.active"
+                         disable="tab.disabled" ng-click="changeTab(tab);">
+                </uib-tab>
+            </uib-tabset>
+
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOne" style="cursor:pointer;"
+                     ng-click="toogleSearchPanel('collapseDiv')">
+                    <h4 class="panel-title">
+                        <span class="glyphicon glyphicon-chevron-right">知识点查询</span>
+                    </h4>
+                </div>
+                <div style="height: 0px;" class="panel-collapse collapse" id="collapseDiv" uib-collapse="isCollapsed">
+                    <div class="panel-body">
+                        <table class="SearchTable">
+                            <tr>
+                                <td style="width:150px;">标题:</td>
+                                <td><input type="text" class="form-control" id="name" name="name" placeholder="标题"
+                                           style="width:500px;" ng-model="postData.name"/></td>
+                                <td style="text-align:right;">
+                                    <button type="button" class="btn btn-primary" ng-click="loadData()">查询</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">知识点列表</div>
+                <div class="panel-body">
+                    <button type="button" class="btn btn-primary" ng-click="newFreeExam()">新增知识点</button>
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>标题</th>
+                            <th style="text-align:center;width:100px;">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in items">
+                            <td style="display:none;"><input type="text" class="form-control" id="id" name="id"
+                                                             style="width:300px;" ng-model="item.id"></td>
+                            <td>{{item.name}}</td>
+
+
+                            <td style="text-align:center;">
+                                <!--<span style="cursor:pointer;" class="glyphicon glyphicon-pencil" title="编辑内容"
+                                      ng-click="edit(item.content_norm_doc_id)"></span>&nbsp;|&nbsp;
+                                <span style="cursor:pointer;" class="glyphicon glyphicon-pencil" title="编辑答案"
+                                      ng-click="edit(item.answer_norm_doc_id)"></span>&nbsp;|&nbsp;-->
+
+                                <span style="cursor:pointer;" class="glyphicon glyphicon-pencil" title="编辑"
+                                      ng-click="editContent(item)"></span>&nbsp;|&nbsp;
+                                <span style="cursor:pointer;" class="glyphicon glyphicon-remove" title="删除"
+                                      ng-click="delNode(item);"></span>
+                            </td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="6">
+                                <nav style="float:left;">
+                                    <ul class="pagination" style="width:100%;">
+                                        <li>
+                                            <p style="float:left;padding:6px 12px;">总记录数:{{pagging.pageTotal}}</p>
+                                            <p style="float:left;padding:6px 12px;">每页显示:</p>
+                                            <select class="form-control" style="width:100px;float:left;"
+                                                    ng-model="pagging.pageSize" ng-change="loadData()">
+                                                <option value="10">10</option>
+                                                <option value="20">20</option>
+                                                <option value="50">50</option>
+                                                <option value="100">100</option>
+                                            </select>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <nav style="float:right;">
+                                    <uib-pagination boundary-links="true" total-items="pagging.pageTotal"
+                                                    items-per-page="pagging.pageSize" ng-model="pagging.pageIndex"
+                                                    max-size="pagging.maxSize" force-ellipses="true" class="pagination"
+                                                    previous-text="上一页" next-text="下一页" first-text="首页" last-text="末页"
+                                                    ng-change="loadData()"></uib-pagination>
+                                </nav>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div>
+    <script type="text/ng-template" id="NewModule.html">
+        <form name="tableForm" class="form-horizontal" ng-submit="save(tableForm.$valid)" novalidate>
+            <div class="modal-header">
+                <h3 class="modal-title" ng-show="pscope.newOrEditState==0">新增模块</h3>
+                <h3 class="modal-title" ng-show="pscope.newOrEditState==1">修改模块</h3>
+            </div>
+            <div class="modal-body">
+                <table class="SearchTable">
+                    <tr>
+                        <td width="120">
+                            模块名称：
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" id="typeName" name="name"
+                                   placeholder="模块名称" style="width:300px;float: left;" ng-model="postDataModule.name"
+                                   required
+                                   ng-maxlength="20">
+                        </td>
+                        <td>
+                            <p ng-show="tableForm.name.$error.required" class="errorInfo">名称不能为空</p>
+                            <p ng-show="tableForm.name.$error.maxlength" class="errorInfo">名称长度至多为20位</p>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" style="width:100px;" type="submit">确认</button>
+                <button class="btn btn-info" style="width:100px;" type="button" ng-click="cancel()">取消</button>
+            </div>
+        </form>
+    </script>
+</div>
+<div>
+    <script type="text/ng-template" id="NewFreeExam.html">
+        <form name="tableForm" class="form-horizontal" ng-submit="save(tableForm.$valid)" novalidate>
+            <div class="modal-header">
+                <h3 class="modal-title">新增知识点</h3>
+            </div>
+            <div class="modal-body">
+                <table class="SearchTable">
+                    <tr>
+                        <td width="120px">
+                            知识点名称：
+                        </td>
+
+                        <td>
+                            <input type="text" class="form-control" id="reeExamName" name="name"
+                                   placeholder="知识点名称" style="width:300px;float: left;" ng-model="postDataFreeExam.name"
+                                   required
+                                   ng-maxlength="40">
+                        </td>
+                        <td>
+                            <p ng-show="tableForm.name.$error.required" class="errorInfo">名称不能为空</p>
+                            <p ng-show="tableForm.name.$error.maxlength" class="errorInfo">名称长度至多为40位</p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" style="width:100px;" type="submit">确认</button>
+                <button class="btn btn-info" style="width:100px;" type="button" ng-click="cancel()">取消</button>
+            </div>
+        </form>
+    </script>
+</div>

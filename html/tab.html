@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en" ng-app="phtindex">
+<head>
+    <meta charset="utf-8">
+    <title>AngularSpringmvcMybatis App</title>
+    <link href="../css/bootstrap.css" rel='stylesheet' type='text/css' />
+    <!-- Custom CSS -->
+    <link href="../css/style.css" rel='stylesheet' type='text/css' />
+    <!-- font CSS -->
+    <!-- font-awesome icons -->
+    <link href="../css/font-awesome.css" rel="stylesheet">
+    <!-- //font-awesome icons -->
+
+    <link rel="stylesheet" type="text/css" href="../css/jquery.dataTables.min.css">
+    <link href="../css/fonts.css" rel="stylesheet" type="text/css">
+    <!--animate-->
+    <link href="../css/animate.css" rel="stylesheet" type="text/css" media="all">
+
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <script src="../js/lib/public/jquery-1.11.1.min.js"></script>
+    <script src="../js/lib/public/modernizr.custom.js"></script>
+
+    <script src="../js/lib/public/wow.min.js"></script>
+
+
+    <script>
+        new WOW().init();
+    </script>
+    <!--//end-animate-->
+    <!-- chart -->
+    <script src="../js/lib/public/Chart.js"></script>
+    <!-- //chart -->
+    <script src="../js/lib/public/moment-2.2.1.js" type="text/javascript"></script>
+
+    <!--End Calender-->
+    <!-- Metis Menu -->
+    <script src="../js/lib/public/metisMenu.min.js"></script>
+    <script src="../js/lib/public/custom.js"></script>
+</head>
+<body class="cbp-spmenu-push">
+<div class="main-content">
+    <!--left-fixed -navigation-->
+    <div class="sidebar" role="navigation">
+        <div class="navbar-collapse">
+            <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-left" id="cbp-spmenu-s1">
+                <ul class="nav" id="side-menu">
+                    <li>
+                        <a href="index.html" class="active"><i class="fa fa-home nav_icon"></i>主页</a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-cogs nav_icon"></i>系统管理 <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse">
+                            <li>
+                                <a href="index.html#/user">用户管理</a>
+                            </li>
+                            <li>
+                                <a href="index.html#/menu">菜单管理</a>
+                            </li>
+                            <li>
+                                <a href="index.html#/role">系统角色管理</a>
+                            </li>
+                            <!--<li>
+                                <a href="#">日志管理</a>
+                            </li>-->
+                        </ul>
+                        <!-- /nav-second-level -->
+                    </li>
+                    <li class="">
+                        <a href="#"><i class="fa fa-book nav_icon"></i>科室管理<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse">
+                            <li>
+                                <a href="index.html#/department">科室基本信息管理</a>
+                            </li>
+                            <!--<li>
+                                <a href="typography.html">科室介绍管理</a>
+                            </li>-->
+                        </ul>
+                        <!-- /nav-second-level -->
+                    </li>
+                    <!--<li>
+                        <a href="#"><i class="fa fa-envelope nav_icon"></i>病种管理<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse">
+                            <li>
+                                <a href="index.html#/diseasetype">病种大类管理 </a>
+                            </li>
+
+                        </ul>
+                    </li>-->
+                    <li>
+                        <a href="#"><i class="fa fa-envelope nav_icon"></i>病例管理<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse">
+                            <li>
+                                <a href="index.html#/case">病例分类管理 </a>
+                            </li>
+                            <li>
+                                <a href="index.html#/case">病例管理 </a>
+                            </li>
+                            <li>
+                                <a href="index.html#/medicine">药品分类管理 </a>
+                            </li>
+                            <!--<li>
+                                <a href="compose.html">病例维护</a>
+                            </li>-->
+                        </ul>
+                        <!-- //nav-second-level -->
+                    </li>
+
+                    <li>
+                        <a href="index.html#/casepackage"><i class="fa fa-envelope nav_icon"></i>病例袋管理<span class="fa arrow"></span></a>
+
+                        <!-- //nav-second-level -->
+                    </li>
+
+                    <!--<li>
+                        <a href="tables.html"><i class="fa fa-table nav_icon"></i>Tables <span class="nav-badge">05</span></a>
+                    </li>-->
+                    <!--<li>
+                        <a href="#"><i class="fa fa-check-square-o nav_icon"></i>角色管理<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse">
+                            <li>
+                                <a href="forms.html">角色分类管理 </a>
+                            </li>
+                            <li>
+                                <a href="validation.html">角色信息维护</a>
+                            </li>
+                            <li>
+                                <a href="index.html#/role">角色管理</a>
+                            </li>
+                        </ul>
+                    </li>-->
+                    <li>
+                        <a href="#"><i class="fa fa-file-text-o nav_icon"></i>测试管理<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse">
+                            <li>
+                                <a href="index.html#/exam">题库管理</a>
+                            </li>
+                            <li>
+                                <a href="index.html#/paper">考卷管理</a>
+                            </li>
+                            <li>
+                                <a href="index.html#/test">考试管理</a>
+                            </li>
+                            <!--<li>
+                                <a href="#">成绩管理</a>
+                            </li>-->
+                        </ul>
+                        <!-- //nav-second-level -->
+                    </li>
+                    <!--<li>
+                        <a href="charts.html" class="chart-nav"><i class="fa fa-bar-chart nav_icon"></i>Charts <span class="nav-badge-btm pull-right">new</span></a>
+                    </li>-->
+                </ul>
+                <!-- //sidebar-collapse -->
+            </nav>
+        </div>
+    </div>
+    <!--left-fixed -navigation-->
+    <!-- header-starts -->
+    <div class="sticky-header header-section ">
+        <div class="header-left">
+            <!--toggle button start-->
+            <button id="showLeftPush"><i class="fa fa-bars"></i></button>
+            <!--toggle button end-->
+            <!--logo -->
+            <div class="logo">
+                <a href="index.html">
+                    <h1>PET</h1>
+
+                </a>
+            </div>
+            <!--//logo-->
+            <div class="clearfix"> </div>
+        </div>
+        <div class="header-right">
+            <div class="clearfix"> </div>
+        </div>
+        <div class="clearfix"> </div>
+    </div>
+    <!-- //header-ends -->
+    <!-- main content start-->
+    <div id="page-wrapper">
+        <div class="main-page">
+            <div id="wrapper">
+
+                <div ng-controller="mainCtrl">
+                    <tabset>
+                        <tab
+                                ng-repeat="data in repeatData"
+                                heading="{{data.data.name}}"
+                                active="data.value.name"
+                                select="setActiveTab(data.data.name)">
+                                <div class="panel panel-danger">
+                                    <div class="panel-heading"><i class="fa fa-plus-circle icon-margin-right10"></i>{{data.value.name}}</div>
+                                    <div class="panel-body">
+                                        <input type="text" data-ng-model=value[$index] id="value[$index]" ng-change="updateValueInScope($index)" />
+                                    </div>
+                                </div>
+                        </tab>
+                    </tabset>
+                    <input type="text" ng-model="elem" ng-change="updateValueInScope()" class="hidden" />
+                </div>
+
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+    </div>
+    <!--footer-->
+    <div class="footer">
+        <p>Copyright &copy; 2016.Company name All rights reserved.</p>
+    </div>
+    <!--//footer-->
+</div>
+<div >
+    <script type="text/ng-template" id="myModalContent.html">
+        <div class="modal-header">
+            <h3>I'm a modal!</h3>
+        </div>
+        <div class="modal-body">
+            <ul>
+                <li ng-repeat="item in items">
+                    <a ng-click="selected.item = item">{{ item }}</a>
+                </li>
+            </ul>
+            Selected: <b>{{ selected.item }}</b>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
+    <button class="btn" ng-click="open()">Open me!</button>
+</div>
+
+<!-- Classie -->
+<script src="../js/lib/public/classie.js"></script>
+<script>
+    var menuLeft = document.getElementById('cbp-spmenu-s1'),
+            showLeftPush = document.getElementById('showLeftPush'),
+            body = document.body;
+
+    showLeftPush.onclick = function () {
+        classie.toggle(this, 'active');
+        classie.toggle(body, 'cbp-spmenu-push-toright');
+        classie.toggle(menuLeft, 'cbp-spmenu-open');
+        disableOther('showLeftPush');
+    };
+
+
+    function disableOther(button) {
+        if (button !== 'showLeftPush') {
+            classie.toggle(showLeftPush, 'disabled');
+        }
+    }
+
+
+
+</script>
+<!--scrolling js-->
+<script src="../js/lib/public/jquery.nicescroll.js"></script>
+<script src="../js/lib/public/scripts.js"></script>
+<!-- angular treetable -->
+<script src="../js/lib/public/jquery.treetable.js"></script>
+<!--//scrolling js-->
+<!-- Bootstrap Core JavaScript -->
+<script src="../js/lib/public/bootstrap.js"> </script>
+<script src="../js/ckeditor/ckeditor.js"> </script>
+<script src="../js/lib/angular/angular.js"></script>
+<script src="../js/lib/public/underscore.js"></script>
+<script src="../js/lib/angular/ngStorage.min.js"></script>
+<!--<script src="../js/app.js"></script>-->
+<script src="../js/services.js"></script>
+
+
+
+<script src="../js/filters.js"></script>
+<script src="../js/directives.js"></script>
+<script src="../js/lib/angular/angular-animate.js"></script>
+<script src="../js/lib/angular/ui-bootstrap-tpls.js"></script>
+<script src="../js/lib/angular/angular-route.js"></script>
+<!-- tree table-->
+<script src="../js/lib/angular/angular-treetable.js"></script>
+
+<!-- grid-->
+<script src="../js/lib/public/ng-table.min.js"></script>
+
+
+<script src="../js/controllers/DiseaseTypeController.js"></script>
+<script src="../js/controllers/ClinicController.js"></script>
+
+<script src="../js/lib/public/dndTree.js"></script>
+<link href="../css/petplugin.css" rel="stylesheet" />
+<link href="../css/Ztree/metroStyle/metroStyle.css" rel="stylesheet" />
+<link href="../bootstrap/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+
+<script src="../js/petplugin.js"></script>
+<script src="../bootstrap/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
+<script src="../bootstrap/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="../js/ckeditor/ckeditor.js"></script>
+<script src="../js/common.js"></script>
+
+<!-- tab -->
+<script src="../js/lib/angular/angular-sanitize.min.js"></script>
+<script>
+    var currentTab = "";
+    function GetRequest() {
+
+        var url = decodeURI(location.search); //get the strings after ? in url
+        var theRequest = new Object();
+        if (url.indexOf("?") != -1) {
+            var str = url.substr(1);
+            var strs = str.split("&");
+            for(var i = 0; i < strs.length; i ++) {
+                theRequest[strs[i].split("=")[0]]=(strs[i].split("=")[1]);
+            }
+        }
+        currentTab = theRequest['currentTab'];
+    }
+
+    angular.module('phtindex', ['ui.bootstrap', 'ngSanitize'])
+            .controller("mainCtrl", function ($scope) {
+                // Set tabs
+                $scope.tabs = [{
+                    name: "one",
+                    content: '<h1>tab one</h1>'
+                }, {
+                    name: "two",
+                    content: '<h1>tab two</h1>'
+                }, {
+                    name: "three",
+                    content: '<h1>tab three</h1>'
+                }];
+
+                $scope.tabsactive = [{
+                    name: true,
+                    content: '<h1>tab one</h1>'
+                }, {
+                    name: false,
+                    content: '<h1>tab two</h1>'
+                }, {
+                    name: false,
+                    content: '<h1>tab three</h1>'
+                }];
+
+                var dataArray = $scope.tabs;
+                var valueArray = $scope.tabsactive;
+                $scope.repeatData = dataArray.map(function(value, index) {
+                    return {
+                        data: value,
+                        value: valueArray[index]
+                    }
+                });
+
+                $scope.test=function(){
+                    GetRequest();
+                    $.each($scope.tabsactive ,function(i,item){
+                        if(i == parseInt(currentTab))
+                                item['name'] = true;
+                        else
+                            item['name'] = false;
+                    });
+
+                    var dataArray = $scope.tabs;
+                    var valueArray = $scope.tabsactive;
+                    $scope.repeatData = dataArray.map(function(value, index) {
+                        return {
+                            data: value,
+                            value: valueArray[index]
+                        }
+                    });
+                }
+
+                $scope.changes = 0;
+                $scope.data = {};
+                $scope.value = [];
+                $scope.updateValueInScope = function (index) {
+                    alert($scope.value[index]);
+                }
+
+                // Save active tab to localStorage
+                $scope.setActiveTab = function (activeTab) {
+                    sessionStorage.setItem("activeTab", activeTab);
+                };
+
+                // Get active tab from localStorage
+                $scope.getActiveTab = function () {
+                    return sessionStorage.getItem("activeTab");
+                };
+
+                // Check if current tab is active
+                $scope.isActiveTab = function (tabName, index) {
+                    var activeTab = $scope.getActiveTab();
+                    return (activeTab === tabName || (activeTab === null && index === 0));
+                };
+
+                $scope.test();
+            });
+</script>
+</body>
+
+</html>

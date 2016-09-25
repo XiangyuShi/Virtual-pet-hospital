@@ -1,0 +1,163 @@
+﻿<style>
+    .errorInfo {
+        margin-top: 5px;
+        margin-left: 5px;
+        float: left;
+        color: red;
+    }
+</style>
+<div style="padding:0 10px 0 10px;">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOne" style="cursor:pointer;"
+             ng-click="toogleSearchPanel('collapseDiv')">
+            <h4 class="panel-title">
+                <span class="glyphicon glyphicon-chevron-right">查询条件</span>
+            </h4>
+        </div>
+        <div style="height: 0px;" class="panel-collapse collapse" id="collapseDiv" uib-collapse="isCollapsed">
+            <div class="panel-body">
+                <table class="SearchTable">
+                    <tr>
+                        <td>角色名称:</td>
+                        <td>
+                            <input type="text" ng-keydown="searchKeyDown($event)"  class="form-control" id="name" name="name" placeholder="角色名称"
+                                   style="width:300px;" ng-model="postData.name" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>状态:</td>
+                        <td>
+                            <select class="form-control" name="status" id="status" style="width:300px;"
+                                    ng-model="postData.status">
+                                <option value="-1">全部</option>
+                                <option value="1">有效</option>
+                                <option value="0">无效</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="text-align:right;">
+                            <button type="button" class="btn btn-primary" ng-click="loadData()">查询</button>
+                            <button type="button" class="btn btn-primary" ng-click="clear()">清空</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">系统角色列表</div>
+        <div class="panel-body">
+            <button type="button" class="btn btn-primary" ng-click="new()">新增角色</button>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>名称</th>
+                        <th>状态</th>
+                        <th style="text-align:center;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="p in data">
+                        <td>{{p.name}}</td>
+                        <td>{{renderStatus(p.status)}}</td>
+                        <td style="text-align:center;">
+                            <span style="cursor:pointer;" class="glyphicon glyphicon-pencil" title="编辑"
+                                  ng-click="edit(p.id)"></span>&nbsp;|&nbsp;
+                            <span style="cursor:pointer;" class="glyphicon glyphicon-remove" title="删除"
+                                  ng-click="del(p.id)"></span>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="6">
+                            <nav style="float:left;">
+                                <ul class="pagination" style="width:100%;">
+                                    <li>
+                                        <p style="float:left;padding:6px 12px;">总记录数:{{pagging.pageTotal}}</p>
+                                        <p style="float:left;padding:6px 12px;">每页显示:</p>
+                                        <select class="form-control" style="width:100px;float:left;"
+                                                ng-model="pagging.pageSize" ng-change="loadData()">
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                        </select>
+                                    </li>
+                                </ul>
+                            </nav>
+                            <nav style="float:right;">
+                                <uib-pagination boundary-links="true" total-items="pagging.pageTotal"
+                                                items-per-page="pagging.pageSize" ng-model="pagging.pageIndex"
+                                                max-size="pagging.maxSize" force-ellipses="true" class="pagination"
+                                                previous-text="上一页" next-text="下一页" first-text="首页" last-text="末页"
+                                                ng-change="loadData()"></uib-pagination>
+                            </nav>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <div>
+        <script type="text/ng-template" id="systemRoleModal.html">
+            <form name="tableForm" class="form-horizontal" ng-submit="save(tableForm.$valid)" novalidate>
+                <div class="modal-header">
+                    <h3 class="modal-title">系统角色</h3>
+                </div>
+                <div class="modal-body">
+
+                    <uib-tabset active="active" style="padding:5px 10px 10px 10px;">
+                        <uib-tab index="0" heading="系统角色基本信息" active="tab.active" disable="tab.disabled">
+                            <div class="form-group" style="padding:10px 0 5px 0;">
+                                <div class="col-sm-2">
+                                    <label for="systemRoleName">系统角色名称</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="systemRoleName" name="systemRoleName" placeholder="系统角色名称" style="width:300px;" ng-model="rowData.name" required ng-maxlength="20" />
+                                </div>
+                                <div class="col-sm-4">
+                                    <p ng-show="tableForm.systemRoleName.$error.required" class="errorInfo" style="float:left;">系统角色名称不可为空</p>
+                                    <p ng-show="tableForm.systemRoleName.$error.maxlength" class="errorInfo" style="float:left;">系统角色名称长度至多为20位</p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-2">
+                                    <label for="systemRoleStatus">状态</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <select class="form-control" id="systemRoleStatus" name="systemRoleStatus" style="width:300px;" ng-model="rowData.status" required>
+                                        <option value="1">有效</option>
+                                        <option value="0">无效</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <p ng-show="tableForm.systemRoleStatus.$error.required" class="errorInfo" style="float:left;">状态不可为空</p>
+                                </div>
+                            </div>
+                        </uib-tab>
+                        <uib-tab index="1" heading="系统角色权限" active="tab.active" disable="tab.disabled">
+                            <div data-angular-treeview="true"
+                                 data-tree-id="tree"
+                                 data-tree-model="resultSet"
+                                 data-node-id="roleId"
+                                 data-node-label="roleName"
+                                 data-node-children="children"
+                                 data-show-trash="false" 
+                                 data-show-check="true"
+                                 data-node-check="isCheck">
+                            </div>
+                        </uib-tab>
+                    </uib-tabset>
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" type="submit">保存</button>
+                    <button class="btn btn-warning" type="button" ng-click="cancel()">取消</button>
+                </div>
+            </form>
+        </script>
+    </div>
+</div>

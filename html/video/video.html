@@ -1,0 +1,200 @@
+<style>
+    .imgHW {
+        border-radius: 2px;
+        margin: 5px;
+        padding: 2px;
+        border: 1px solid #515151;
+        height: 195px;
+        text-align: center;
+    }
+    .imgItem{
+        /*height: 110px;*/
+        /*width: 120px;*/
+        height:60%;
+        width:90%;
+    }
+    .textItem{
+        margin: 5px;
+        width: 90%;
+        overflow:hidden;
+
+        text-overflow:ellipsis;
+        text-align: center;
+        line-height:20px;
+        height:40px;
+    }
+</style>
+<div class="row">
+    <ul class="breadcrumb">
+        <li class="active">视频管理</li>
+    </ul>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <div class="form-group">
+                <div class="input-group has-success">
+                    <input type="text" class="form-control" ng-model="keyWords" placeholder="请输入视频查询信息">
+                    <div style="cursor:pointer" class="input-group-addon" ng-click="searchByVideoName(keyWords)"><i
+                            class="fa fa-search"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">{{hitText}}</div>
+    <div class="col-md-2 col-md-offset-3 btn-group">
+        <!--<button class="btn btn-default" ng-click="downClick()">
+            <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+            下载
+        </button>
+        <button class="btn btn-default">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            删除
+        </button>-->
+        <button class="btn btn-primary btn-block" type="button" ng-click="showUploadPane()">
+            <span class="glyphicon glyphicon-open" aria-hidden="true"></span>
+            上传视频
+        </button>
+        <!--        <button class="btn btn-primary btn-block" type="button" data-toggle="collapse" data-target="#uploadPane"
+                        aria-expanded="false" aria-controls="uploadPane">
+                    <span class="glyphicon glyphicon-open" aria-hidden="true"></span>
+                    上传
+                </button>-->
+    </div>
+</div>
+<div class="row well" id="uploadPane" ng-show="showUploadPaneAttr">
+    <div class="col-md-3">
+
+        <!-- Example: nv-file-select="" uploader="{Object}" options="{Object}" filters="{String}" -->
+        单个视频
+        <input id="file" type="file" accept="video/mp4,video/avi,video/wmv"/>
+
+        <h3 id="state"></h3>
+    </div>
+
+    <div class="col-md-9" style="margin-bottom: 40px">
+
+        <h3>上传列表</h3>
+        <!--  <p>视频数目： 1</p>-->
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th width="50%">名称</th>
+                <th width="15%">大小</th>
+                <th width="20%">进度</th>
+                <th width="5%"></th>
+                <th width="10%">状态</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr id="uploadVideoItem">
+                <td id="fileName"><strong>{{uploadVideoItems.name}}</strong></td>
+                <td id="fileSize" nowrap>{{uploadVideoItems.size/1024/1024|number:2}}MB</td>
+                <td>
+                    <div class="progress" style="margin-bottom: 0;">
+                        <div id="fileProgress" class="progress-bar" role="progressbar"
+                             ng-style="{ 'width': filePercent+ '%' }"></div>
+                    </div>
+                </td>
+                <td class="text-center">
+                    {{filePercent+'%'}}
+                </td>
+                <td class="text-center">
+                    <span ng-show="filePercent=='100'"><i class="glyphicon glyphicon-ok"></i></span>
+                    <span ng-show="status==0"><i class="glyphicon glyphicon-sort"></i></span>
+                    <span ng-show="status==-1"></span>
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+
+        <div>
+            <!-- <div>
+                 进度：
+                 <div class="progress" >
+                     <div class="progress-bar" role="progressbar" style="{{'width: '+filePercent+'%;'}}"></div>
+                 </div>
+             </div>-->
+            <button type="button" id="send" name="submit" class="btn btn-success btn-s" ng-click="upload()"
+                    ng-disabled="filePercent!=''&&filePercent!='100'">
+                <span class="glyphicon glyphicon-upload"></span> 上传视频
+            </button>
+            <button type="button" class="btn btn-warning btn-s" ng-click="cancelAll()"
+                    ng-disabled="filePercent==''||filePercent=='100'">
+                <span class="glyphicon glyphicon-ban-circle"></span> 取消上传
+            </button>
+            <button type="button" class="btn btn-danger btn-s" ng-click="clearQueue()"
+                    ng-disabled="!filePercent">
+                <span class="glyphicon glyphicon-trash"></span> 移除视频
+            </button>
+        </div>
+    </div>
+    <!--    <br/><br/>
+        <button id="bt2" type="button" name="submit">上传</button>
+        <div class="progress" style="margin-bottom: 0;">
+            <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+        </div>
+        <div class="progress progress-striped active">
+            <div class="progress-bar progress-bar-success" role="progressbar"
+                 aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
+                 style="width: 80%;">
+                <span class="sr-only">40% 完成</span>
+            </div>
+        </div>-->
+</div>
+<!--显示部分-->
+<div class="row" id="fileContent" ng-show="showFileItemAttr">
+    <ul id="list" class="list-unstyled ">
+        <li class="col-md-2 " style="padding-left: 0;padding-right: 0" ng-repeat="item in currentVideoItems">
+            <div class="imgHW">
+                <div style="margin-bottom: 5px">
+                    <button class="btn btn-default btn-sm glyphicon glyphicon-trash" role="menuitem" tabindex="-1"
+                            ng-click="deleteVideo(item.id)" type="button"></button>
+                    <a style="color:#515151" ng-href="{{item.video}}" download="{{item.name}}">
+                        <button ng-disabled="item.video==null" class="btn btn-default btn-sm glyphicon glyphicon-download-alt" role="menuitem"
+                                tabindex="-1" type="button"></button>
+                    </a>
+                </div>
+                <a ng-if="item.video!=null" ng-href="{{item.video}}" target=_blank><img class="imgItem" ng-src={{item.picture}} title="{{item.name}}" alt="{{item.name}}"></a>
+                <img ng-if="item.video==null"  class="imgItem" src="" alt="">
+                <div class="textItem" title="{{item.name}}">{{item.name}}</div>
+            </div>
+
+
+        </li>
+    </ul>
+</div>
+<!--分页bar-->
+<div class="row">
+    <table ng-show="!(hitText=='' || hitText=='没有找到符合的视频')">
+        <tr>
+            <td colspan="7">
+                <nav style="float:left;">
+                    <ul class="pagination" style="width:100%;">
+                        <li>
+                            <p style="float:left;padding:6px 12px;">总记录数:{{pagging.pageTotal}}</p>
+                            <p style="float:left;padding:6px 12px;">每页显示:</p>
+                            <select class="form-control" style="width:100px;float:left;" ng-model="pagging.pageSize"
+                                    ng-change="paginate()">
+                                <option value="12">12</option>
+                                <option value="18">18</option>
+                                <option value="36">36</option>
+                                <option value="72">72</option>
+                            </select>
+                        </li>
+                    </ul>
+                </nav>
+                <nav style="float:right;">
+                    <uib-pagination boundary-links="true" total-items="pagging.pageTotal"
+                                    items-per-page="pagging.pageSize" ng-model="pagging.pageIndex"
+                                    max-size="pagging.maxSize" force-ellipses="true" class="pagination"
+                                    previous-text="上一页" next-text="下一页" first-text="首页" last-text="末页"
+                                    ng-change="paginate()"></uib-pagination>
+                </nav>
+            </td>
+        </tr>
+    </table>
+</div>

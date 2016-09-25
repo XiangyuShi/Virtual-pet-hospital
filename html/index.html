@@ -1,0 +1,212 @@
+﻿﻿
+<style>
+    .nav-second-level li {
+        padding-left: 40px;
+    }
+</style>
+<!doctype html>
+<html lang="en" ng-app="phtindex">
+<head>
+    <meta charset="utf-8">
+    <title>虚拟宠物医院管理后台</title>
+    <link href="../css/bootstrap.css" rel='stylesheet' type='text/css' />
+    <!-- Custom CSS -->
+    <link href="../css/style.css" rel='stylesheet' type='text/css' />
+    <!-- font CSS -->
+    <!-- font-awesome icons -->
+    <link href="../css/font-awesome.css" rel="stylesheet">
+    <!-- //font-awesome icons -->
+
+    <link rel="stylesheet" type="text/css" href="../css/jquery.dataTables.min.css">
+    <link href="../css/fonts.css" rel="stylesheet" type="text/css">
+    <!--animate-->
+    <link href="../css/animate.css" rel="stylesheet" type="text/css" media="all">
+    <!--alert-->
+    <link rel="stylesheet" type="text/css" href="../css/sweet-alert.css">
+    <link rel="stylesheet" type="text/css" href="../css/ng-sortable.css">
+    <script type="application/x-javascript">
+        addEventListener("load", function () {
+               setTimeout(hideURLbar, 0);
+           }, false);
+           function hideURLbar() {
+               window.scrollTo(0, 1);
+           } </script>
+    <script src="../js/lib/jquery/jquery-2.2.4.min.js"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/jquery.cookie.js"></script>
+    <script type="text/javascript">
+        var user = { user: { id: '0b4448a554d223ca0154d22b7e090001' } };
+        $.cookie(constVar.userCookie, JSON.stringify(user));
+        var userCookie = $.cookie(constVar.userCookie) || '';
+        if (userCookie == null || userCookie == '') {
+            location.href = constVar.loginUrl + '?type=admin';
+        }
+    </script>
+    <script src="../js/lib/public/modernizr.custom.js"></script>
+    <script src="../js/lib/public/wow.min.js"></script>
+
+
+    <script>
+        new WOW().init();
+    </script>
+    <!--//end-animate-->
+    <!-- chart -->
+    <script src="../js/lib/public/Chart.js"></script>
+    <!-- //chart -->
+    <script src="../js/lib/public/moment-2.2.1.js" type="text/javascript"></script>
+
+    <!--End Calender-->
+    <!-- Metis Menu -->
+    <script src="../js/lib/public/metisMenu.min.js"></script>
+    <script src="../js/lib/public/custom.js"></script>
+</head>
+<body class="cbp-spmenu-push">
+    <div class="main-content" ng-controller="IndexMenuController">
+        <!--left-fixed -navigation-->
+        <div class="sidebar" role="navigation">
+            <div class="navbar-collapse">
+                <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-left" id="cbp-spmenu-s1">
+                    <ul class="nav" id="side-menu">
+                        <li ng-repeat="menu in menus" on-finish-render="initMenu()">
+                            <a href="#"><i class="{{menu.icon}}"></i><span ng-bind="menu.name"></span><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level collapse">
+                                <li ng-repeat="subMenu in menu.menuList">
+                                    <a href="index.html#/{{subMenu.url}}" ng-bind="subMenu.name"></a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <div class="sticky-header header-section ">
+            <div class="header-left">
+                <!--toggle button start-->
+                <button id="showLeftPush"><i class="fa fa-bars"></i></button>
+                <!--toggle button end-->
+                <!--logo -->
+                <div class="logo">
+                    <a href="index.html">
+                        <h1>虚拟宠物医院后台管理</h1>
+                    </a>
+                </div>
+                <!--//logo-->
+                <div class="clearfix"></div>
+            </div>
+            <div class="header-right">
+                <div class="logo">
+                    <a style="float:right;">
+                        <button type="button" id="btnLogOut" class="btn btn-default" onclick="$.cookie(constVar.userCookie, ''); location.href = constVar.loginUrl + '?type=admin';">退出</button>
+                    </a>
+                    <span style="color: #fff;float:right; padding: 1.2em 0em .7em;" ng-bind="'您好,'+user.name"></span>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div id="page-wrapper">
+            <div class="main-page">
+                <div id="wrapper">
+                    <div style="height:80px;"></div>
+                    <div ng-view></div>
+
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+
+    </div>
+    <script src="../js/lib/public/classie.js"></script>
+    <script>
+        var menuLeft = document.getElementById('cbp-spmenu-s1'),
+                showLeftPush = document.getElementById('showLeftPush'),
+                body = document.body;
+
+        showLeftPush.onclick = function () {
+            classie.toggle(this, 'active');
+            classie.toggle(body, 'cbp-spmenu-push-toright');
+            classie.toggle(menuLeft, 'cbp-spmenu-open');
+            disableOther('showLeftPush');
+        };
+
+
+        function disableOther(button) {
+            if (button !== 'showLeftPush') {
+                classie.toggle(showLeftPush, 'disabled');
+            }
+        }
+    </script>
+    <!--scrolling js-->
+    <script src="../js/lib/public/jquery.nicescroll.js"></script>
+    <script src="../js/lib/public/scripts.js"></script>
+    <!-- angular treetable -->
+    <script src="../js/lib/public/jquery.treetable.js"></script>
+    <!--//scrolling js-->
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../js/lib/public/bootstrap.js"></script>
+    <script src="../js/ckeditor/ckeditor.js"></script>
+    <!--<script src="../js/lib/angular/angular.js"></script>-->
+    <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.js"></script>-->
+    <script src="../js/lib/angular/angular.js"></script>
+    <script src="../js/lib/angular/angular-file-upload.js"></script>
+    <script src="../js/lib/public/underscore.js"></script>
+    <script src="../js/lib/angular/ngStorage.min.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/services.js"></script>
+    <script src="../js/controllers/UserController.js"></script>
+    <script src="../js/controllers/SystemRoleController.js"></script>
+    <script src="../js/controllers/DicController.js"></script>
+    <script src="../js/controllers/ClinicController.js"></script>
+    <script src="../js/controllers/CaseController.js"></script>
+    <script src="../js/controllers/CasePackageController.js"></script>
+    <script src="../js/controllers/OperateController.js"></script>
+    <script src="../js/controllers/DepartmentController.js"></script>
+    <script src="../js/controllers/PaperController.js"></script>
+    <script src="../js/controllers/PaperContentController.js"></script>
+    <script src="../js/controllers/TestController.js"></script>
+    <script src="../js/controllers/MenuController.js"></script>
+    <script src="../js/controllers/DepartmentController.js"></script>
+    <script src="../js/controllers/ExamController.js"></script>
+    <script src="../js/controllers/ExamDetialController.js"></script>
+    <script src="../js/controllers/MedicineController.js"></script>
+    <script src="../js/controllers/PictureController.js"></script>
+    <script src="../js/controllers/VideoController.js"></script>
+    <script src="../js/controllers/FreeModeController.js"></script>
+    <script src="../js/controllers/FreeModeContentController.js"></script>
+    <script src="../js/controllers/FreeModeExamContentController.js"></script>
+    <script src="../js/controllers/IndexMenuController.js"></script>
+    <script src="../js/controllers/ApplianceController.js"></script>
+    <script src="../js/filters.js"></script>
+    <script src="../js/directives.js"></script>
+    <script src="../js/lib/angular/angular-animate.js"></script>
+    <script src="../js/lib/angular/ui-bootstrap-tpls-1.3.2.js"></script>
+    <script src="../js/lib/angular/angular-route.js"></script>
+    <!-- tree table-->
+    <script src="../js/lib/angular/angular-treetable.js"></script>
+    <!-- upload -->
+    <script src="../js/lib/angular/angular-file-upload.min.js"></script>
+    <!-- grid-->
+    <script src="../js/lib/public/ng-table.min.js"></script>
+    <!-- alert-->
+    <script src="../js/lib/public/sweet-alert.js"></script>
+    <script src="../js/controllers/DiseaseTypeController.js"></script>
+
+    <script src="../js/lib/public/dndTree.js"></script>
+    <link href="../css/petplugin.css" rel="stylesheet" />
+    <link href="../css/Ztree/metroStyle/metroStyle.css" rel="stylesheet" />
+    <link href="../bootstrap/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <script src="../js/lib/Ztree/jquery.ztree.core-3.5.js"></script>
+    <script src="../js/lib/Ztree/jquery.ztree.excheck-3.5.js"></script>
+    <script src="../js/lib/Ztree/jquery.ztree.exedit-3.5.js"></script>
+    <script src="../js/petplugin.js"></script>
+    <script src="../bootstrap/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="../bootstrap/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="../js/ckeditor/ckeditor.js"></script>
+
+    <script src="../js/lib/jquery/jQuery.md5.js"></script>
+    <script src="../js/lib/jquery/jquery.json.min.js"></script>
+    <script src="../js/lib/public/Sortable.js"></script>
+    <script src="../js/lib/angular/ng-sortable.js"></script>
+</body>
+
+</html>

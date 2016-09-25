@@ -1,0 +1,136 @@
+<link rel="stylesheet" type="text/css" href="../css/jquery.treetable.css" />
+<link rel="stylesheet" type="text/css" href="../css/jquery.treetable.theme.default.css" />
+
+
+
+
+<div class="row">
+    <ol class="breadcrumb">
+        <li><a href="index.html#/diseasetype">病种管理</a></li>
+        <li class="active"> 病种大类管理</li>
+    </ol>
+    <script type="text/ng-template" id="tree_node">
+        <tr tt-node is-branch="node.type == '大类'">
+            <td><span ng-bind="node.name" style="cursor:pointer;"></span></td>
+            <td ng-bind="node.type"></td>
+            <td >
+                <button class="btn btn-info icon-margin-right10" ng-show="node.type == '大类'" ng-click="newSumType(node,500)">新增</button>
+                <button class="btn btn-info icon-margin-right10" ng-show="node.type != '大类'" ng-click="editDetail(node)">介绍</button>
+                <button class="btn btn-success icon-margin-right10" ng-click="editType(node,500)">编辑</button>
+                <button class="btn btn-warning" ng-click="deleteDisease(node.type,node.id,node.name)">删除</button>
+            </td>
+        </tr>
+    </script>
+
+    <h4><i class="fa fa-book icon-margin-right10"></i>病种大类列表>
+        <button class="btn btn-primary pull-right col-md-2" style="margin:10px 10px 10px 10px;" ng-click="newSumType('',500)">新增</button></h4>
+
+    <table class="tree-table" tt-table tt-params="dynamic_params" data-ng-init="init()">
+        <thead>
+        <tr>
+            <th>病种名称</th>
+            <th>类型</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+</div>
+
+<script type="text/ng-template" id="diseaseTypeNewContent.html">
+    <div class="modal-header">
+        <h3 ng-show="items.parentName!=''" class="modal-title">新增病种小类</h3>
+        <h3 ng-show="items.parentName==''" class="modal-title">新增病种大类</h3>
+    </div>
+    <form name="tableForm" novalidate>
+    <div class="modal-body">
+        <div class="form-group">
+            <label ng-show="items.parentName==''">病种大类名称</label>
+            <div class="form-group" ng-show="items.parentName!=''">
+                <label>病种大类 : </label> <label>{{items.name}}</label>
+            </div>
+            <label ng-show="items.parentName!=''">病种名称</label>
+            <input type="text" name="newname" class="form-control" required ng-model="items.detailTypeName"/>
+            <p ng-show="tableForm.newname.$error.required" class="errorInfo">不可为空</p>
+        </div>
+
+    </div>
+    <div class="modal-footer diseaseTypeBtn">
+        <button class="btn btn-primary" type="button" ng-disabled="tableForm.$invalid" ng-click="ok()">保存</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">取消</button>
+    </div>
+    </form>
+</script>
+
+<script type="text/ng-template" id="diseaseNewContent.html">
+    <div class="modal-header">
+        <h3 class="modal-title">{{items.name}}</h3>
+    </div>
+    <form name="tableForm" novalidate>
+        <div class="modal-body">
+            <div class="form-group" ng-show="items.parentName!=''">
+                <label>病种大类 : </label> <label>{{items.parentName}}</label>
+            </div>
+            <div class="form-group">
+                <label>病种名称</label>
+                <input type="text" class="form-control" required ng-model="items.detailTypeName"/>
+                <p ng-show="tableForm.name.$error.required" class="errorInfo">不可为空</p>
+            </div>
+
+        </div>
+        <div class="modal-footer diseaseTypeBtn">
+            <button class="btn btn-primary" type="button" ng-disabled="tableForm.$invalid" ng-click="ok()">保存</button>
+            <button class="btn btn-warning" type="button" ng-click="cancel()">取消</button>
+        </div>
+    </form>
+</script>
+
+<script type="text/ng-template" id="diseaseEditContent.html">
+    <div class="modal-header">
+        <h3 class="modal-title">{{items.name}}</h3>
+    </div>
+    <form name="tableForm" novalidate>
+    <div class="modal-body">
+        <div class="form-group" ng-show="items.parentName!=''">
+            <label>病种大类 : </label> <label>{{items.parentName}}</label>
+        </div>
+        <div class="form-group">
+            <label>病种名称</label><label>病种名称</label>
+            <input type="text" class="form-control" required ng-model="items.name" required value={{items.name}}/>
+            <p ng-show="tableForm.name.$error.required" class="errorInfo">不可为空</p>
+        </div>
+
+    </div>
+    <div class="modal-footer diseaseTypeBtn">
+        <button class="btn btn-primary" type="button" ng-disabled="tableForm.$invalid" ng-click="ok()">保存</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">取消</button>
+    </div>
+    </form>
+</script>
+
+
+<script type="text/ng-template" id="diseaseTypeEditContent.html">
+    <div class="modal-header">
+        <h3 class="modal-title">{{items.name}}</h3>
+    </div>
+    <form name="tableForm" novalidate>
+    <div class="modal-body">
+
+        <div class="form-group" ng-show="items.parentName!=null">
+            <label>病种大类 : </label> <label>{{items.parentName}}</label>
+        </div>
+        <div class="form-group">
+            <label>病种名称</label>
+            <input type="text" name="name" class="form-control" required ng-model="items.name" required/>
+            <p ng-show="tableForm.name.$error.required" class="errorInfo">不可为空</p>
+        </div>
+
+
+    </div>
+    <div class="modal-footer diseaseTypeBtn">
+        <button class="btn btn-primary" type="button" ng-disabled="tableForm.$invalid"  ng-click="ok()">保存</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">取消</button>
+    </div>
+    </form>
+</script>

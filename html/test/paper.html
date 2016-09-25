@@ -1,0 +1,89 @@
+﻿<div style="padding:0 10px 0 10px;">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOne" style="cursor:pointer;" ng-click="toogleSearchPanel('collapseDiv')">
+            <h4 class="panel-title">
+                <span class="glyphicon glyphicon-chevron-right">考卷查询</span>
+            </h4>
+        </div>
+        <div style="height: 0px;" class="panel-collapse collapse" id="collapseDiv" uib-collapse="isCollapsed">
+            <div class="panel-body">
+                <table class="SearchTable">
+                    <tr>
+                        <td>卷名:</td>
+                        <td><input type="text" ng-keydown="searchKeyDown($event)" class="form-control" id="name" name="name" placeholder="卷名" style="width:300px;" ng-model="postData.name" /></td>
+                        <td>状态:</td>
+                        <td>
+                            <select class="form-control" name="status" style="width:300px;" ng-model="postData.status">
+                                <option value="-1">全部</option>
+                                <option value="1">有效</option>
+                                <option value="0">无效</option>
+                            </select>
+                        </td>
+                        <td style="text-align:right;">
+                            <button type="button" class="btn btn-primary" ng-click="loadData()">查询</button>
+                            <button type="button" class="btn btn-primary" ng-click="clear()">清空</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">考卷列表</div>
+        <div class="panel-body">
+            <button type="button" class="btn btn-primary" ng-click="new()">新增考卷</button>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>卷名</th>
+                        <th>总时间</th>
+                        <th>总题数</th>
+                        <th>总分</th>
+                        <!--<th>考卷类型</th>-->
+                        <th>状态</th>
+                        <th style="text-align:center;" width="100px;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="p in data">
+                        <td>{{p.name}}</td>
+                        <td>{{p.totalMins}} 分钟</td>
+                        <td>{{p.totalQuestions}}</td>
+                        <td>{{p.totalScore}}</td>
+                        <!--<td>{{renderType(p.type)}}</td>-->
+                        <td>{{renderStatus(p.status)}}</td>
+                        <td style="text-align:center;width:200px;">
+                            <span style="cursor:pointer;" class="glyphicon glyphicon-pencil" title="编辑" ng-click="edit(p.id)"></span>|
+                            <span style="cursor:pointer;" class="glyphicon glyphicon-eye-open" title="查看" ng-click="view(p.id)"></span>|
+                            <span style="cursor:pointer;" class="glyphicon glyphicon-remove" title="删除" ng-click="del(p.id)"></span>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="6">
+                            <nav style="float:left;">
+                                <ul class="pagination" style="width:100%;">
+                                    <li>
+                                        <p style="float:left;padding:6px 12px;">总记录数:{{pagging.pageTotal}}</p>
+                                        <p style="float:left;padding:6px 12px;">每页显示:</p>
+                                        <select class="form-control" style="width:100px;float:left;" ng-model="pagging.pageSize" ng-change="loadData()">
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                        </select>
+                                    </li>
+                                </ul>
+                            </nav>
+                            <nav style="float:right;">
+                                <uib-pagination boundary-links="true" total-items="pagging.pageTotal" items-per-page="pagging.pageSize" ng-model="pagging.pageIndex" max-size="pagging.maxSize" force-ellipses="true" class="pagination" previous-text="上一页" next-text="下一页" first-text="首页" last-text="末页" ng-change="loadData()"></uib-pagination>
+                            </nav>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+</div>

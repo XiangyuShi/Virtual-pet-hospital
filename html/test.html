@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="../css/bootstrap.css" rel="stylesheet" />
+    <link href="../css/petplugin.css" rel="stylesheet" />
+    <link href="../css/Ztree/metroStyle/metroStyle.css" rel="stylesheet" />
+    <script src="../js/lib/public/jquery-1.11.1.min.js"></script>
+    <script src="../js/lib/public/bootstrap.js"></script>
+    <script src="../js/lib/Ztree/jquery.ztree.core-3.5.js"></script>
+    <script src="../js/lib/Ztree/jquery.ztree.excheck-3.5.js"></script>
+    <script src="../js/lib/Ztree/jquery.ztree.exedit-3.5.js"></script>
+    <script src="../js/petplugin.js"></script>
+</head>
+<body>
+    <button onclick="test1();">测试1</button>
+    <button onclick="test2();">测试2</button>
+    <div id="divModal" style="display:none;"> sdsadasdasd</div>
+
+    <div class="PluginPanel" id="divTree" style="width:500px;height:500px;"></div>
+
+
+    <input id="parentTree" type="text" plugin-tree="{width:300,height:100,autoLoad:false,root:'根节点',multiple:true,postData:{},url:'',placeHolder:'请选择上级'}" />
+</body>
+</html>
+
+
+<script type="text/javascript">
+    var plugin;
+    var modal;
+    var loadmask;
+    var tree;
+    $(document).ready(function () {
+        plugin = new petPlugin();
+        plugin.InitializePlugin();
+        loadmask = plugin.CreateMask({
+            style: 'z-index:9999;',
+            id: 'test_Mask',
+            loadingImage: true
+        });
+        modal = plugin.CreateModal({
+            id: '',
+            title: '这是模态框',
+            width: 600,
+            height: 400,
+            cancelText: '取消',
+            confirmText: '确认',
+            onConfirm: function () { loadmask.show(); },
+            onCancel: function () { alert('1'); },
+            contentElement: 'divModal'
+        });
+        tree = plugin.CreateTree({
+            id: 'tree',
+            root: '根目录',
+            postData: {},
+            expandAll: true,
+            multiple: false,
+            nodeClick: function (event, treeId, treeNode) { alert('click'); },
+            onCheck: function (event, treeId, treeNode) { alert('check'); },
+            renderTo: 'divTree',
+        });
+
+
+    });
+
+    function test1() {
+        //loadmask.show();
+        //window.setTimeout(function () { loadmask.hide(); }, 2000);
+        $('#parentTree').val('');
+        $('#parentTree').trigger('change');
+    }
+    function test2() {
+        //modal.show();
+        $('#parentTree').val('1');
+        $('#parentTree').trigger('change');
+    }
+
+</script>

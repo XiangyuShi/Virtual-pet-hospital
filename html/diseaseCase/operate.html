@@ -1,0 +1,390 @@
+<style>
+    .breadcrumb > li + li:before {
+        content: "\00a0";
+    }
+</style>
+<div class="row">
+    <ol class="breadcrumb">
+        <li class="active">&nbsp;</li>
+        <li style="float:right;cursor:pointer;"><i class="fa fa-reply" ng-click="back()">返回</i></li>
+    </ol>
+    <div class="row">
+        <div class="col-md-4" style="padding-bottom:5px;">
+            <select class="form-control " ng-model="normalDocSelect" style="float:left;width:30%;">
+                <option value="0" ng-selected="true">请选择组别</option>
+                <option value="1">文字</option>
+                <option value="2">视频组</option>
+                <option value="3">图片组</option>
+            </select>
+            <input type="text" class="form-control " ng-model="normalDocName" placeholder="请输入组名"
+                   style="float:left;width:50%;" ng-keydown="addKeyDown($event)">
+            <div class="input-group-addon form-control" ng-click="add(normalDocName)"
+                 style="float:left;width:20%;padding: 8px 12px;"><i
+                    class="fa fa-plus" style="cursor:pointer;">新增</i>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">操作具体内容</div>
+                <div class="panel-body">
+                    <div
+                            data-angular-treeview="true"
+                            data-tree-id="tree02"
+                            data-tree-model="operateList"
+                            data-node-id="roleId"
+                            data-node-label="roleName"
+                            data-node-children="children"
+                            data-show-trash="true">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8 ">
+
+            <div class="panel panel-default" ng-show="isWord">
+                <div class="panel-heading"> {{currentOperateName|| ""}}</div>
+                <div class="panel-body">
+                    <div class="panel panel-info">
+                        <div class="panel-heading"><i class="fa fa-plus-circle icon-margin-right10"></i>编辑--{{currentOperateName||
+                            ""}}内容
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <textarea class="form-control" rows="3" placeholder="输入文字" style="height: 150px"
+                                          ng-model="currentOperateContent">{{currentOperateContent}}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-success "
+                                        ng-click="showMedicine()">
+                                    插入药品
+                                </button>
+                                <button class="btn btn-success "
+                                        ng-click="editWord(currentOperateContent)">
+                                    保存
+                                </button>
+                                <button class="btn btn-success " ng-click="clearWord()">
+                                    清空
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="panel panel-default" ng-show="isMedicine">
+                <div class="panel-heading">
+                    <i class="fa fa-plus-circle icon-margin-right10"></i>查找药品
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>药品大类</label>
+                            <select class="form-control" ng-change="loadMedicine(medicineType)" ng-model="medicineType"
+                                    ng-options="medicineType.name for medicineType in medicineTypes">
+                                <option value=""> -- 请选择 --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <div>
+                                <label>药品</label>
+                            </div>
+                            <div class="input-group has-success">
+
+                                <input type="text" class="form-control" ng-model="searchText" placeholder="请输入药品查询信息" ng-keydown="searchMediKeyDown($event)">
+                                <div class="input-group-addon" ng-click="searchMedicine(searchText)"><i
+                                        class="fa fa-search"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th style="text-align:center;width:10%;"></th>
+                                <th>药品名称</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="item in items">
+                                <td><input type="checkbox" ng-true-value="true" ng-false-value="false"
+                                           ng-model="item.checked"/></td>
+                                <td>{{item.name}}</td>
+                                <td><input type="hidden" class="form-control" id="id" name="id" style="width:300px;"
+                                           ng-model="item.id"></td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="6">
+                                    <nav style="float:left;">
+                                        <ul class="pagination" style="width:100%;">
+                                            <li>
+                                                <p style="float:left;padding:6px 12px;">总记录数:{{pagging.pageTotal}}</p>
+                                                <p style="float:left;padding:6px 12px;">每页显示:</p>
+                                                <select class="form-control" style="width:100px;float:left;"
+                                                        ng-model="pagging.pageSize" ng-change="paginate()">
+                                                    <option value="10">10</option>
+                                                    <option value="20">20</option>
+                                                    <option value="50">50</option>
+                                                    <option value="100">100</option>
+                                                </select>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                    <nav style="float:right;">
+                                        <uib-pagination boundary-links="true" total-items="pagging.pageTotal"
+                                                        items-per-page="pagging.pageSize" ng-model="pagging.pageIndex"
+                                                        max-size="pagging.maxSize" force-ellipses="true"
+                                                        class="pagination"
+                                                        previous-text="上一页" next-text="下一页" first-text="首页"
+                                                        last-text="末页"
+                                                        ng-change="paginate()"></uib-pagination>
+                                    </nav>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <button type="submit" class="btn btn-primary col-md-3" ng-click="addToTest2()">
+                            插入到文本
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default" ng-show="isPicture">
+                <div class="panel-heading">{{currentOperateName|| ""}}</div>
+                <div class="panel-body">
+                    <div class="panel panel-info">
+                        <div class="panel-heading"><i class="fa fa-plus-circle icon-margin-right10"></i>编辑图片</div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <div>
+                                    <img src={{currentNode.img}} style="border-radius:5px;border: 1px solid #ddd"
+                                         height="150"
+                                         width="200">
+                                </div>
+                                <div>
+                                    <button class="btn btn-success margin-top12 btn-default" type="button"
+                                            ng-click="deletePicture(currentNode.roleId);">
+                                        删除
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="panel panel-default" ng-show="isPictureGroup">
+                <div class="panel-heading">{{currentOperateName|| ""}}</div>
+                <div class="panel-body">
+                    <div class="panel panel-danger">
+                        <div class="panel-heading"><i class="fa fa-plus-circle icon-margin-right10"></i>新增图片</div>
+                        <div class="panel-body">
+                            <div class="form-group" ng-show="imgShow">
+                                <div class="form-group">
+                                    <div class="input-group has-success col-md-6">
+                                        <input type="text" class="form-control" ng-model="picName"
+                                               placeholder="请输入图片查询信息" ng-keydown="searchPicKeyDown($event)">
+                                        <div class="input-group-addon" ng-click="searchByPictureName(picName)"
+                                             style="cursor:pointer;"><i
+                                                class="fa fa-search"></i>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-success pull-right" ng-click="addPic()">添加</button>
+                                    </div>
+                                </div>
+                                <div class="form-group" style="float:left;margin-right:20px;width:25%;"
+                                     ng-repeat="img in imgItems">
+                                    <div>
+                                        <img src={{img.img}} style="border-radius:5px;border: 1px solid #ddd"
+                                             height="150"
+                                             width="200"
+                                             title="{{img.name}}" ng-dblclick="imgDbClick(img)">
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="input-group-addon"><input type="checkbox" ng-checked="img.isChecked"
+                                                                              ng-model="img.isChecked"></div>
+                                        <input type="text" class="form-control" ng-model="img.name"
+                                               title="{{img.name}}">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--分页bar-->
+                <div class="row">
+                    <table>
+                        <tr>
+                            <td colspan="6">
+                                <nav style="float:left;">
+                                    <ul class="pagination" style="width:100%;">
+                                        <li>
+                                            <p style="float:left;padding:6px 12px;">总记录数:{{imgpagging.pageTotal}}</p>
+                                            <p style="float:left;padding:6px 12px;">每页显示:</p>
+                                            <select class="form-control" style="width:100px;float:left;" ng-model="imgpagging.pageSize"
+                                                    ng-change="imgPaginate()">
+                                                <option value="9">9</option>
+                                                <option value="18">18</option>
+                                            </select>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <nav style="float:right;">
+                                    <uib-pagination boundary-links="true" total-items="imgpagging.pageTotal"
+                                                    items-per-page="imgpagging.pageSize" ng-model="imgpagging.pageIndex"
+                                                    max-size="imgpagging.maxSize" force-ellipses="true" class="pagination"
+                                                    previous-text="上一页" next-text="下一页" first-text="首页" last-text="末页"
+                                                    ng-change="imgPaginate()"></uib-pagination>
+                                </nav>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel panel-default" ng-show="isVideo">
+                <div class="panel-heading">{{currentOperateName|| ""}}</div>
+                <div class="panel-body">
+                    <div class="panel panel-info">
+                        <div class="panel-heading"><i class="fa fa-plus-circle icon-margin-right10"></i>编辑视频</div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <div>
+                                    <img src={{currentNode.pic}} style="border-radius:5px;border: 1px solid #ddd"
+                                         height="150"
+                                         width="200">
+                                </div>
+                                <div>
+                                    <button class="btn  btn-success margin-top12 btn-default" type="button"
+                                            ng-click="deleteVideo(currentNode.roleId)">
+                                        删除
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default" ng-show="isVideoGroup">
+                <div class="panel-heading">{{currentOperateName|| ""}}</div>
+                <div class="panel-body">
+                    <div class="panel panel-danger">
+                        <div class="panel-heading"><i class="fa fa-plus-circle icon-margin-right10"></i>新增视频</div>
+                        <div class="panel-body">
+                            <div class="form-group" ng-show="!imgShow">
+                                <div class="form-group">
+                                    <div class="input-group has-success col-md-6">
+                                        <input type="text" class="form-control" ng-model="videoName"
+                                               placeholder="请输入视频查询信息" ng-keydown="searchVidKeyDown($event)">
+                                        <div class="input-group-addon" ng-click="searchByVideoName(videoName)"
+                                             style="cursor:pointer;"><i
+                                                class="fa fa-search"></i>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-success pull-right" ng-click="addVid()">添加</button>
+                                    </div>
+                                </div>
+                                <div class="form-group" style="float:left;margin-right:20px;width:25%;"
+                                     ng-repeat="vid in vidItems">
+                                    <div>
+                                        <img src={{vid.picture}} style="border-radius:5px;border: 1px solid #ddd"
+                                             height="150" width="200" title="{{vid.name}}"
+                                             ng-dblclick="videoDbClick(vid)">
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="input-group-addon"><input type="checkbox" ng-checked="vid.isChecked"
+                                                                              ng-model="vid.isChecked"></div>
+                                        <input type="text" class="form-control" ng-model="vid.name"
+                                               title="{{vid.name}}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--分页bar-->
+                <div class="row">
+                    <table>
+                        <tr>
+                            <td colspan="6">
+                                <nav style="float:left;">
+                                    <ul class="pagination" style="width:100%;">
+                                        <li>
+                                            <p style="float:left;padding:6px 12px;">总记录数:{{vidpagging.pageTotal}}</p>
+                                            <p style="float:left;padding:6px 12px;">每页显示:</p>
+                                            <select class="form-control" style="width:100px;float:left;" ng-model="vidpagging.pageSize"
+                                                    ng-change="vidPaginate()">
+                                                <option value="9">9</option>
+                                                <option value="18">18</option>
+                                            </select>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <nav style="float:right;">
+                                    <uib-pagination boundary-links="true" total-items="vidpagging.pageTotal"
+                                                    items-per-page="vidpagging.pageSize" ng-model="vidpagging.pageIndex"
+                                                    max-size="vidpagging.maxSize" force-ellipses="true" class="pagination"
+                                                    previous-text="上一页" next-text="下一页" first-text="首页" last-text="末页"
+                                                    ng-change="vidPaginate()"></uib-pagination>
+                                </nav>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script type="text/ng-template" id="myModalContent.html">
+        <div class="modal-header">
+            <h3 class="modal-title">I'm a modal!</h3>
+        </div>
+        <div class="modal-body">
+            <!--<ul>-->
+            <!--<li ng-repeat="item in items">-->
+            <!--<a href="#" ng-click="$event.preventDefault(); selected.item = item">{{ item }}</a>-->
+            <!--</li>-->
+            <!--</ul>-->
+            <!--Selected: <b>{{ selected.item }}</b>-->
+
+            <form name="outerForm" class="tab-form-demo">
+                <uib-tabset active="activeForm">
+                    <uib-tab index="0" heading="Form Tab">
+                        <ng-form name="nestedForm">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" class="form-control" required ng-model="model.name"/>
+                            </div>
+                        </ng-form>
+                    </uib-tab>
+                    <uib-tab index="1" heading="Tab One">
+                        Some Tab Content
+                    </uib-tab>
+                    <uib-tab index="2" heading="Tab Two">
+                        More Tab Content
+                    </uib-tab>
+                </uib-tabset>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
+
+</div>

@@ -1,0 +1,138 @@
+<style>
+    .SearchTable {
+        width: 100%;
+        border: none;
+    }
+
+        .SearchTable tr td {
+            padding: 0.7rem;
+            line-height: 1.6;
+        }
+
+    .errorInfo {
+        margin-top: 5px;
+        margin-left: 5px;
+    }
+
+    .ctl {
+        table-layout: fixed;
+    }
+
+        .ctl td {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 2px;
+        }
+</style>
+<div>
+    <div class="tab-content">
+        <div class="panel panel-default">
+            <uib-tabset active="activeIndex" style="padding:5px 10px 10px 10px;">
+                <uib-tab index="$index + 1" ng-repeat="tab in tabs" on-finish-render="lockTab()" heading="{{tab.name}}" active="tab.active" disable="tab.disabled" ng-click="changeTab(tab.id);">
+                </uib-tab>
+            </uib-tabset>
+
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOne" style="cursor:pointer;" ng-click="toogleSearchPanel('collapseDiv')">
+                    <h4 class="panel-title">
+                        <span class="glyphicon glyphicon-chevron-right">考题查询</span>
+                    </h4>
+                </div>
+                <div style="height: 0px;" class="panel-collapse collapse" id="collapseDiv" uib-collapse="isCollapsed">
+                    <div class="panel-body">
+                        <table class="SearchTable">
+                            <tr>
+                                <td style="width:150px;">标题/内容:</td>
+                                <td><input type="text" class="form-control" id="name" name="name" ng-keydown="searchKeyDown($event)" placeholder="标题或内容" style="width:500px;" ng-model="postData.name" /></td>
+                                <td style="text-align:right;">
+                                    <button type="button" class="btn btn-primary" ng-click="loadData()">查询</button>
+                                    <button type="button" class="btn btn-primary" ng-click="clear()">清空</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">考题列表</div>
+                <div class="panel-body">
+                    <button type="button" class="btn btn-primary" ng-click="new()">新增考题</button>
+                    <button type="button" class="btn btn-primary" ng-click="import();">批量导入</button>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>标题</th>
+                                <th>内容</th>
+                                <th style="text-align:center;width:200px;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in items">
+                                <td style="display:none;"><input type="text" class="form-control" id="id" name="id" style="width:300px;" ng-model="item.id"></td>
+                                <td>{{item.name}}</td>
+                                <td>{{item.descriptext}}</td>
+
+                                <td style="text-align:center;">
+                                    <span style="cursor:pointer;" class="glyphicon glyphicon-pencil" title="编辑" ng-click="edit(item.id)"></span>|
+                                    <span style="cursor:pointer;" class="glyphicon glyphicon-eye-open" title="查看" ng-click="view(item.id)"></span>|
+                                    <span style="cursor:pointer;" class="glyphicon glyphicon-remove" title="删除" ng-click="delNode(item);"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="6">
+                                    <nav style="float:left;">
+                                        <ul class="pagination" style="width:100%;">
+                                            <li>
+                                                <p style="float:left;padding:6px 12px;">总记录数:{{pagging.pageTotal}}</p>
+                                                <p style="float:left;padding:6px 12px;">每页显示:</p>
+                                                <select class="form-control" style="width:100px;float:left;" ng-model="pagging.pageSize" ng-change="loadData()">
+                                                    <option value="10">10</option>
+                                                    <option value="20">20</option>
+                                                    <option value="50">50</option>
+                                                    <option value="100">100</option>
+                                                </select>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                    <nav style="float:right;">
+                                        <uib-pagination boundary-links="true" total-items="pagging.pageTotal" items-per-page="pagging.pageSize" ng-model="pagging.pageIndex" max-size="pagging.maxSize" force-ellipses="true" class="pagination" previous-text="上一页" next-text="下一页" first-text="首页" last-text="末页" ng-change="loadData()"></uib-pagination>
+                                    </nav>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <script type="text/ng-template" id="ExamImport.html">
+        <div class="modal-header">
+            <h3 class="modal-title">考题导入</h3>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label for="file" class="col-sm-2 control-label">选择文件:</label>
+                    <div class="col-sm-10">
+                        <input type="file" accept="*" nv-file-select class="form-control" name="file" fileread="file" uploader="uploader" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2"></div>
+                    <a class="col-sm-5" href="../files/考题导入模板.xls">下载考题导入模板</a>
+                    <a class="col-sm-5" href="../files/考题导入示例数据.xls">下载考题导入示例数据</a>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" style="width:100px;" type="button" ng-click="ok()">确认</button>
+            <button class="btn btn-warning" style="width:100px;" type="button" ng-click="cancel()">取消</button>
+        </div>
+    </script>
+</div>

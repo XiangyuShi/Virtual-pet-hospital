@@ -1,0 +1,329 @@
+<style>
+    .errorInfo {
+        margin-top: 5px;
+        margin-left: 5px;
+        float: left;
+        color:red;
+    }
+</style>
+<link href="../../css/ng-table.min.css" rel="stylesheet"/>
+<div class="row">
+    <ol class="breadcrumb">
+        <li class="active"> 病例袋管理</li>
+    </ol>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <div class="input-group has-success">
+                    <input type="text" class="form-control" ng-model="word" placeholder="请输入病例袋查询信息" ng-keydown="searchKeyDown($event)">
+                    <div class="input-group-addon" ng-click="searchByKeyWord(word)" style="cursor:pointer;"><i class="fa fa-search"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1 col-md-offset-1">
+            <div class="form-group">
+                <button class="btn btn-success form-control " ng-click="getCasepacketInfo()">新增</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="row">
+
+    <div class="col-md-12" style="margin-top:10px;" ng-show="searchForTable">
+        <div class="panel panel-info">
+            <div class="panel-heading">病历袋查询结果</div>
+            <div class="panel-body">
+                <!--<table ng-table="tableParams" class="table" show-filter="true">-->
+                    <!--<tr ng-repeat="user in $data">-->
+                        <!--<td title="'病历袋名称'" filter="{ name: 'text'}" sortable="'name'">-->
+                            <!--{{user.name}}-->
+                        <!--</td>-->
+                        <!--<td title="'操作'" filter="{ id: 'text'}" sortable="'id'">-->
+                            <!--<button class="btn btn-info btn-sm-case-package icon-margin-left10 icon-margin-right10"-->
+                                    <!--ng-click="getCasepacketInfo(user.id,user.name)"><i class="fa fa-edit"></i>编辑-->
+                            <!--</button>-->
+                            <!--<button class="btn btn-danger btn-sm-case-package icon-margin-left10 icon-margin-right10"-->
+                                    <!--ng-click="deleteCasepacket(user.id)"><i class="fa fa-trash-o"></i>删除-->
+                            <!--</button>-->
+                        <!--</td>-->
+                    <!--</tr>-->
+                <!--</table>-->
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>病例袋名称</th>
+                        <th style="text-align:center;width:200px;">操作</th>
+                        <th style="width:30%;"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in items">
+                        <td>{{item.name}}</td>
+
+                        <td style="text-align:center;">
+                            <span style="cursor:pointer;" class="glyphicon glyphicon-pencil" title="编辑" ng-click="getCasepacketInfo(item.id,item.name)"></span>|
+                            <span style="cursor:pointer;" class="glyphicon glyphicon-folder-open" title="查看" ng-click="view(item.name)"></span>|
+                            <span style="cursor:pointer;" class="glyphicon glyphicon-remove" title="删除" ng-click="deleteCasepacket(item.id);"></span>
+                        </td>
+                        <td><input type="hidden" class="form-control" id="id" name="id" style="width:300px;" ng-model="item.id"></td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="6">
+                            <nav style="float:left;">
+                                <ul class="pagination" style="width:100%;">
+                                    <li>
+                                        <p style="float:left;padding:6px 12px;">总记录数:{{pagging.pageTotal}}</p>
+                                        <p style="float:left;padding:6px 12px;">每页显示:</p>
+                                        <select class="form-control" style="width:100px;float:left;" ng-model="pagging.pageSize" ng-change="paginate()">
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                        </select>
+                                    </li>
+                                </ul>
+                            </nav>
+                            <nav style="float:right;">
+                                <uib-pagination boundary-links="true" total-items="pagging.pageTotal" items-per-page="pagging.pageSize" ng-model="pagging.pageIndex" max-size="pagging.maxSize" force-ellipses="true" class="pagination" previous-text="上一页" next-text="下一页" first-text="首页" last-text="末页" ng-change="paginate()"></uib-pagination>
+                            </nav>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12" style="margin-top:10px;">
+        <div class="panel panel-danger" ng-show="isPacket">
+            <div class="panel-heading">{{currentPacket}}</div>
+            <div class="panel-body">
+                <form name="tableForm" ng-submit="editPacket(tableForm.$valid)" novalidate>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>病历袋名称</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" id="name" name="name" class="form-control" required
+                                               ng-model=packetInfo.packetName value={{packetInfo.packetName}}
+                                               ng-maxlength="20">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p ng-show="tableForm.name.$error.required" class="errorInfo">不可为空</p>
+                                        <p ng-show="tableForm.name.$error.maxlength" class="errorInfo">
+                                            至多为20位</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>主人姓名</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" name="masterName" class="form-control" ng-model=packetInfo.masterName
+                                               value={{packetInfo.masterName}} ng-maxlength="20">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p ng-show="tableForm.masterName.$error.maxlength" class="errorInfo">
+                                            至多为20位</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>住址</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" ng-model=packetInfo.masterAddress
+                                               value={{packetInfo.masterAddress}}>
+                                    </div>
+                                    <div class="col-md-3">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>联系电话</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" name="telephone" ng-model=packetInfo.masterTelephone
+                                               value={{packetInfo.masterTelephone}}>
+                                    </div>
+                                    <div class="col-md-3">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>邮箱</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" ng-model=packetInfo.masterEmail
+                                               value={{packetInfo.masterEmail}}>
+                                    </div>
+                                    <div class="col-md-3">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>体况</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" ng-model=packetInfo.bodyCondition
+                                               value={{packetInfo.bodyCondition}}>
+                                    </div>
+                                    <div class="col-md-3">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>宠物名称</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" name="petName" class="form-control" required
+                                               ng-model=packetInfo.petName value={{packetInfo.petName}} ng-maxlength="20">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p ng-show="tableForm.petName.$error.required" class="errorInfo">不可为空</p>
+                                        <p ng-show="tableForm.petName.$error.maxlength" class="errorInfo">至多为20位</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>宠物属种</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <select class="form-control" ng-model="packetInfo.petSpecies">
+                                            <option value="未知">未知</option>
+                                            <option value="犬">犬</option>
+                                            <option value="猫">猫</option>
+                                            <option value="其他">其他</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>宠物品种</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" ng-model=packetInfo.petBreed
+                                               value={{packetInfo.petBreed}}>
+                                    </div>
+                                    <div class="col-md-3">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>宠物出生日期</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" ng-model="packetInfo.petBirth"
+                                               placeholder="YYYY-MM-DD" style="cursor:pointer;" readonly bootstrapdatetime>
+                                    </div>
+                                    <div class="col-md-3">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>宠物性别</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <select class="form-control" ng-model="packetInfo.petGender">
+                                            <option value="未知">未知</option>
+                                            <option value="雌性">雌性</option>
+                                            <option value="雄性">雄性</option>
+                                            <option value="绝育">绝育</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>宠物毛色</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" ng-model=packetInfo.petCoatColor
+                                               value={{packetInfo.petCoatColor}}>
+                                    </div>
+                                    <div class="col-md-3">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>宠物体重</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" ng-model=packetInfo.petWeight name="weight"
+                                               value={{packetInfo.petWeight}} placeholder="X.Y（千克）" ng-pattern="/\d+\.\d+/">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p ng-show="tableForm.weight.$error.pattern" class="errorInfo">请输入形如X.Y的数字</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-1 col-md-offset-4 ">
+                            <button type="submit" class="btn btn-primary form-control">
+                                    <!--ng-disabled="tableForm.$invalid">-->
+                                保存
+                            </button>
+                        </div>
+                        <div class="col-md-1 col-md-offset-1 ">
+                            <button type="reset" class="btn btn-primary form-control" ng-click="cancelEditPacket()">
+                                取消
+                            </button>
+                        </div>
+                        <div class="col-md-2"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+
+</script>
+</div>

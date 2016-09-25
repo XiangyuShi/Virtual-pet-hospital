@@ -1,0 +1,12 @@
+<div ng-controller="mainCtrl">
+    <tabset>
+        <tab
+                ng-repeat="t in tabs"
+                heading="{{t.name}}"
+                ng-init="isActive = isActiveTab(t.name, $index)"
+                active="isActive"
+                select="setActiveTab(t.name)">
+            <div ng-bind-html="t.content"></div>
+        </tab>
+    </tabset>
+</div>
